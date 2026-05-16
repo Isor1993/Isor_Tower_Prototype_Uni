@@ -14,15 +14,19 @@ public class SheepSettings : ScriptableObject
     [SerializeField] private int _hungerTickRate = 4;
     [SerializeField] private int _hungerThreshold = 100;
 
-    [Header("Movement")]
+    [Header("Move Behaviour")]
     [SerializeField] private float _moveSpeed = 3.5f;
     [SerializeField] private float _fleeDistance = 10f;
+    [SerializeField] private float _minFleeDistance = 8f;
+    [SerializeField] private float _maxFleeDistance = 10f;
+    [SerializeField] private float _fleeDistanceSideOffset = 10f;
 
     [Header("Sense Radius")]
     [SerializeField] private float _threatRadius = 10f;
     [SerializeField] private float _sheepRadius = 8f;
     [SerializeField] private float _playerRadius = 12f;
     [SerializeField] private float _commanderRadius = 15f;
+    [SerializeField] private float _fearRadiusforPlayer = 1f;
 
     [Header("Sense Layers")]
     [SerializeField] private LayerMask _threatLayer;
@@ -42,20 +46,25 @@ public class SheepSettings : ScriptableObject
     public int MaxHealth => _maxHealth;
 
     // ===== HUNGER =====
-    
+
     public float HungerTickInterval => _hungerTickInterval;
     public int HungerTick => _hungerTickRate;
     public int HungerThreshold => _hungerThreshold;
 
-    // ===== MOVEMENT =====
+    // ===== MOVE BEHAVIOUR =====
     public float MoveSpeed => _moveSpeed;
     public float FleeDistance => _fleeDistance;
+    public float MinFleeDistance => _minFleeDistance;
+    public float MaxFleeDistance => _maxFleeDistance;
+    public float FleeDistanceSideOffset => _fleeDistanceSideOffset;
+
 
     // ===== SENSE RADIUS =====
     public float ThreatRadius => _threatRadius;
     public float SheepRadius => _sheepRadius;
     public float PlayerRadius => _playerRadius;
     public float CommanderRadius => _commanderRadius;
+    public float FearRadiusforPlayer => _fearRadiusforPlayer;
 
     // ===== SENSE LAYERS =====
     public LayerMask ThreatLayer => _threatLayer;

@@ -17,6 +17,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     [SerializeField] SheepSettings _settings;
 
     private bool _isSleeping = false;
+    private bool _hasFear = false;
     [SerializeField] private bool _isTamed = false;
     [SerializeField] private SheepStateSettings _stateSettings;
 
@@ -41,6 +42,8 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     public bool IsTamed => _isTamed;
 
+    public bool HasFear => _hasFear;
+
     private void Awake()
     {
         
@@ -54,7 +57,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     }
     private void Start()
     {
-        FSM.ChangeState(new IdleState(this, FSM));
+        FSM.ChangeState(new FleeState(this, FSM)); //TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTTT
     }
 
     private void OnEnable()

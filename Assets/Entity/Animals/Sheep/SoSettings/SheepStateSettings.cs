@@ -10,6 +10,7 @@ public class SheepStateSettings : ScriptableObject
     [Header("Alert State")]
     [Tooltip("How long the sheep stays alert before reacting.")]
     [SerializeField] private float _alertTime = 1.5f;
+    [SerializeField] private float _reactionTime = 2f;
 
     [Header("Patrol State")]
     [Tooltip("Radius around the sheep for random patrol points.")]
@@ -42,6 +43,7 @@ public class SheepStateSettings : ScriptableObject
 
     // ===== ALERT =====
     public float AlertTime => _alertTime;
+    public float ReactionTime => _reactionTime;
 
     // ===== PATROL =====
     public float PatrolRadius => _patrolRadius;

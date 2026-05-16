@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41b7526b8b4400649b8bdaa039f91eb6, type: 3}
+  m_Name: Normal_Sheep
+  m_EditorClassIdentifier: Assembly-CSharp::SheepSettings
+  _typ: 0
+  _maxHealth: 100
+  _hungerTickInterval: 10
+  _hungerTickRate: 4
+  _hungerThreshold: 100
+  _moveSpeed: 3.5
+  _fleeDistance: 10
+  _threatRadius: 10
+  _sheepRadius: 8
+  _playerRadius: 12
+  _commanderRadius: 15
+  _threatLayer:
+    serializedVersion: 2
+    m_Bits: 320
+  _sheepLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  _playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  _colorThreat: {r: 1, g: 0, b: 0, a: 1}
+  _colorSheep: {r: 1, g: 0.9803922, b: 0.9803922, a: 1}
+  _colorPlayer: {r: 0, g: 0, b: 1, a: 1}
+  _colorCommander: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}

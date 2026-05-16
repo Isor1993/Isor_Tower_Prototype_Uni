@@ -1,22 +1,26 @@
 /*****************************************************************************
-* Project : Spielprojekt (K1, S1, S2, S3)
+* Project : Isors Tower Prototype
 * File    : SheepHealth.cs
 * Date    : 20.02.2026
 * Author  : Eric Rosenberg
 *
 * Description :
 * Manages the health system for a sheep entity.
-* Handles damage, healing, and life state checks
-* based on values defined in SheepSettings.
+* Loads health-related values from the SheepSettings ScriptableObject,
+* provides access to the current and maximum health values, and handles
+* damage, healing, and life state checks.
 *
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
 using UnityEngine;
 
+/// <summary>
+/// Controls the health values of a sheep and provides methods for taking damage and healing.
+/// </summary>
 public class SheepHealth : MonoBehaviour
 {
-    [Tooltip("SO SheepSettings comes here.")]
+    [Tooltip("ScriptableObject that contains the base health configuration for this sheep.")]
     [SerializeField] SheepSettings settings;
 
     private int _maxHealth;
@@ -54,12 +58,9 @@ public class SheepHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies damage to the sheep.
-    /// Reduces current health and clamps it to a minimum of zero.
+    /// Applies damage to the sheep and clamps the current health value to a minimum of zero.
     /// </summary>
-    /// <param name="damage">
-    /// The amount of damage to apply.
-    /// </param>
+    /// <param name="damage">The amount of damage to apply.</param>
     public void TakeDamage(int damage)
     {
         _currentHealth-=damage;
@@ -71,13 +72,9 @@ public class SheepHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Heals the sheep by a specified amount.
-    /// Healing only occurs if the sheep is alive.
-    /// Clamps the value to the maximum health.
+    /// Restores health to the sheep if it is alive and clamps the value to the maximum health.
     /// </summary>
-    /// <param name="heal">
-    /// The amount of health to restore.
-    /// </param>
+    /// <param name="heal">The amount of health to restore.</param>
     public void Heal(int heal)
     {
         if (!IsAlive) return;

@@ -5,9 +5,9 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* 
-* 
-* 
+* Calculates the current phase of the day based on the active IngameTime
+* instance. The script exposes the normalized day progress for visual systems
+* and raises an event whenever the current day phase changes.
 *
 * History :
 * xx.xx.2026 ER Created
@@ -16,7 +16,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// 
+/// Represents the main time phases used by the day-night cycle.
 /// </summary>
 public enum DayPhase
 {
@@ -25,37 +25,39 @@ public enum DayPhase
     Evening,
     Night
 }
+/// <summary>
+/// Tracks the current day phase and normalized day progress based on the global ingame time.
+/// </summary>
 public class DayNightCycle : MonoBehaviour
 {
-
     [Header("Phase Settings")]
-    [Tooltip(""),Range(1,24)]
+    [Tooltip("The ingame hour at which the morning phase starts."),Range(1,24)]
     [SerializeField] private int _morningStartHour = 6;
-    [Tooltip(""), Range(1, 24)]
+    [Tooltip("The ingame hour at which the afternoon phase starts."), Range(1, 24)]
     [SerializeField] private int _afternoonStartHour = 12;
-    [Tooltip(""), Range(1, 24)]
+    [Tooltip("The ingame hour at which the evening phase starts."), Range(1, 24)]
     [SerializeField] private int _eveningStartHour = 18;
-    [Tooltip(""), Range(1, 24)]
+    [Tooltip("The ingame hour at which the night phase starts."), Range(1, 24)]
     [SerializeField] private int _nightStartHour = 24;
 
     [Header("Debug")]
-    [Tooltip("")]
+    [Tooltip("The currently active day phase at runtime.")]
     [SerializeField] private DayPhase _currentPhase;
-    [Tooltip("")]
+    [Tooltip("The current progress through the active day, normalized from 0 to 1.")]
     [SerializeField] private float _dayProgress;
 
     /// <summary>
-    /// 
+    /// Gets the currently active day phase.
     /// </summary>
     public DayPhase CurrentDayPhase => _currentPhase;
 
     /// <summary>
-    /// 
+    /// Gets the current normalized day progress from 0 to 1.
     /// </summary>
     public float DayProgress => _dayProgress;
 
     /// <summary>
-    /// 
+    /// Raised whenever the day phase changes. Provides the previous and the new phase.
     /// </summary>
     public event Action<DayPhase, DayPhase> OnDayPhaseChanged;
 
@@ -63,7 +65,7 @@ public class DayNightCycle : MonoBehaviour
     private IngameTime _ingameTime;
 
     /// <summary>
-    /// 
+    /// Initializes the day-night cycle by connecting to the global ingame time instance.
     /// </summary>
     private void Start()
     {
@@ -87,10 +89,10 @@ public class DayNightCycle : MonoBehaviour
     {
         UpdateDayProgress();
         UpdateCurrentPhase();
-    }   
+    }
 
     /// <summary>
-    /// 
+    /// Calculates the normalized progress through the current day.
     /// </summary>
     private void UpdateDayProgress()
     {
@@ -98,9 +100,9 @@ public class DayNightCycle : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Calculates the current day phase from the current ingame hour.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The day phase that matches the current ingame hour.</returns>
     private DayPhase CalculateCurrentPhase()
     {
         int currentHour = _ingameTime.Hours;
@@ -127,7 +129,7 @@ public class DayNightCycle : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Checks for day phase changes and notifies listeners when a new phase starts.
     /// </summary>
     private void UpdateCurrentPhase()
     {

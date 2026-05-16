@@ -1,24 +1,26 @@
 /*****************************************************************************
-* Project : Spielprojekt (K1, S1, S2, S3)
+* Project : Isors Tower Prototype
 * File    : SheepHunger.cs
 * Date    : 20.02.2026
 * Author  : Eric Rosenberg
 *
 * Description :
 * Handles the hunger system for a sheep entity.
-* Reduces hunger over time using a timer-based tick system.
-* Determines whether the sheep is considered hungry
-* based on a configurable threshold.
+* Loads hunger-related values from the SheepSettings ScriptableObject,
+* decreases the current hunger value over time with a timer-based tick system,
+* and provides state properties to determine whether the sheep is hungry or full.
 *
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
 using UnityEngine;
 
-
+/// <summary>
+/// Controls the hunger values of a sheep and updates them over time.
+/// </summary>
 public class SheepHunger : MonoBehaviour
 {
-    [Tooltip("SO SheepSettings comes here.")]
+    [Tooltip("ScriptableObject that contains the base hunger configuration for this sheep.")]
     [SerializeField] SheepSettings settings;
 
     private int _maxHunger;
@@ -30,12 +32,13 @@ public class SheepHunger : MonoBehaviour
 
     /// <summary>
     /// Indicates whether the sheep is currently hungry.
-    /// Returns true if the current hunger value is below the defined threshold.
+    /// Returns true when the current hunger value is below the defined hunger threshold.
     /// </summary>
     public bool IsHungry => _currentHunger < _hungerTreshold;
 
     /// <summary>
-    /// 
+    /// Indicates whether the sheep currently has enough hunger value to be considered full.
+    /// Returns true when the current hunger value is greater than or equal to the hunger threshold.
     /// </summary>
     public bool IsFull => _currentHunger >= _hungerTreshold;
 
@@ -45,9 +48,8 @@ public class SheepHunger : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Increases the current hunger value when the sheep eats.
     /// </summary>
-    /// <param name="hunger">Reduces</param>
     public void Eat()
     {
         //TODOO noch essenslogik machen per zeit
@@ -55,9 +57,8 @@ public class SheepHunger : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads initial hunger configuration from the SheepSettings ScriptableObject.
-    /// Sets max hunger, current hunger, tick interval,
-    /// tick value, and hunger threshold.
+    /// Loads the initial hunger configuration from the SheepSettings ScriptableObject.
+    /// Sets the maximum hunger, current hunger, tick interval, tick amount, and hunger threshold.
     /// </summary>
     private void SetBaseValue()
     {
@@ -79,8 +80,8 @@ public class SheepHunger : MonoBehaviour
     }
 
     /// <summary>
-    /// Reduces the current hunger value by the configured tick amount.
-    /// Ensures the hunger value does not drop below zero.
+    /// Reduces the current hunger value by the configured hunger tick amount.
+    /// Ensures that the hunger value does not drop below zero.
     /// </summary>
     private void ApllyHungerTick()
     {
@@ -90,5 +91,4 @@ public class SheepHunger : MonoBehaviour
             _currentHunger = 0;
         }
     } 
-
 }

@@ -1,13 +1,31 @@
+/*****************************************************************************
+* Project : Isors Tower Prototype
+* File    : SheepMoveBehaviour.cs
+* Date    : 20.02.2026
+* Author  : Eric Rosenberg
+*
+* Description :
+* 
+* 
+* 
+* 
+*
+* History :
+* 20.02.2026 ER Created
+******************************************************************************/
 using UnityEngine;
 
+/// <summary>
+/// 
+/// </summary>
 public class IdleState : SheepStateBase
 {
     private readonly Timer _timer = new Timer();
-
+    private readonly SheepStateBase _returnState;
 
     public IdleState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
     {
-
+        
     }
 
     /// <summary>
@@ -26,23 +44,20 @@ public class IdleState : SheepStateBase
     public override void Tick()
     {
         _timer.Tick(Time.deltaTime);
-        //Debug.Log($"Timer{_timer.ElapsedTime}");
-        //Debug.Log($"HasTreat{Sheep.Sense.HasThreat}");
-        //Debug.Log($"ISHungry{Sheep.Hunger.IsHungry}");
-        //Debug.Log($"ISFinished{_timer.IsFinished(Settings.IdleTime)}");
 
         if (Sheep.Sense.HasThreat)
         {
-            //Debug.Log("HasTreat");
+
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
             return;
         }
         if (Sheep.Hunger.IsHungry)
         {
+
             //Debug.Log("ISHungry");
             //FSM.ChangeState(new EatingState(Sheep, FSM));
             //return;
-        }
+        }    
         if (_timer.IsFinished(Settings.IdleTime))
         {
             //Debug.Log("ISFinished");
