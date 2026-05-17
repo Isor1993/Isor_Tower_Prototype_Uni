@@ -4,20 +4,28 @@ public class RegroupState : SheepStateBase
 {
     public RegroupState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
     {
+        Debug.Log($"{GetType().Name}: Change state => {nameof(RegroupState)}");
     }
 
     public override void Enter()
     {
-        // Start-Logik      
+          
     }
 
     public override void Tick()
     {
-        // Entscheidungslogik   
+        if(Sheep.IsHerdMoving)
+        {
+
+        }
+        else
+        {
+
+        }
+       
     }
     public override void Exit()
     {
-        // Cleanup (optional)
-        Debug.Log("Exit Idle");
+       
     }
 }

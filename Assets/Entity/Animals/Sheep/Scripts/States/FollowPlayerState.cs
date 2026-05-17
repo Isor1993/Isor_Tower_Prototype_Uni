@@ -24,7 +24,7 @@ public class FollowPlayerState : SheepStateBase
             FSM.ChangeState(new RegroupState(Sheep, FSM));
             return;
         }
-        Sheep.FollowPlayer();
+        Sheep.Move.Follow(Sheep.Sense.CurrentPlayer);
             
     }
     public override void Exit()

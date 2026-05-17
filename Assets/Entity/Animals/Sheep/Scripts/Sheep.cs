@@ -20,6 +20,13 @@ public class Sheep : MonoBehaviour, IDayNightListener
     private bool _hasFear = false;
     [SerializeField] private bool _isTamed = false;
     [SerializeField] private SheepStateSettings _stateSettings;
+    [SerializeField] private HerdManager _herdManager;
+    public bool IsHerdMoving;
+
+    
+
+    public HerdManager HerdManager => _herdManager;
+
 
     public SheepMoveBehaviour Move { get; private set; }
     public SheepHealth Health { get; private set; }
@@ -57,7 +64,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     }
     private void Start()
     {
-        FSM.ChangeState(new IdleState(this, FSM)); //TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTTT
+        FSM.ChangeState(new RegroupState(this, FSM)); //TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTTT
     }
 
     private void OnEnable()
@@ -99,11 +106,5 @@ public class Sheep : MonoBehaviour, IDayNightListener
             Debug.Log("Sheep => Awake");
         }
     }
-
-    public void FollowPlayer()
-    {
-        Move.Follow(Sense.CurrentPlayer);
-    }
-
-
+   
 }

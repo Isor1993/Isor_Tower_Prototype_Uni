@@ -34,7 +34,7 @@ public class TEster : MonoBehaviour
                 
                 
                     _timer.Reset();
-                    _fleePosition = _move.FleeFrom(_threat.position);
+                    _fleePosition = _move.AwayFrom(_threat.position);
                 
             }
         }

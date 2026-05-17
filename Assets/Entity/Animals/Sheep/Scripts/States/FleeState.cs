@@ -19,7 +19,7 @@ public class FleeState : SheepStateBase
 
         if (_threat != null)
         {
-            Sheep.Move.FleeFrom(_threat.position);
+            Sheep.Move.AwayFrom(_threat.position);
         }
     }
 
@@ -42,7 +42,7 @@ public class FleeState : SheepStateBase
         if (_updateTimer.IsFinished(Settings.UpdateTickNewPosition))
         {
             _updateTimer.Reset();
-            Sheep.Move.FleeFrom(_threat.position);
+            Sheep.Move.AwayFrom(_threat.position);
             return;
         }
 
