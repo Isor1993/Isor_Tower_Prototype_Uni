@@ -26,32 +26,59 @@ public class SheepMoveBehaviour : MonoBehaviour
     private NavMeshAgent _agent;
     NavMeshPath _path;
     private float _followDistance = 2f;
-    //_______Auslagern in setting viel._____________    
+    
+
+    
+     
+    [Tooltip(""),Range(1,4)]
     [SerializeField] private float _sampleradius = 2f;
+    [Tooltip(""), Range(4, 20)]
     [SerializeField] private float _minFleeDistance = 6f;
+    [Tooltip(""), Range(4, 40)]
     [SerializeField] private float _maxFleeDistance = 10f;
+    [Tooltip(""), Range(1, 20)]
     [SerializeField] private float _fleeDistanceSideOffset = 10f;
+    [Tooltip(""), Range(1, 1000)]
     [SerializeField] private int _maxSearchTrys = 100;
 
+    [Header("Movement Settings")]
+    [SerializeField] private float _walkSpeed = 2f;
+    [SerializeField] private float _walkAcceleration = 4f;
+    [SerializeField] private float _walkAngularSpeed = 120f;
 
-    private Vector3 _fleeDirection;
+    [Header("Flee Movement Settings")]
+    [SerializeField] private float _fleeSpeed = 6f;
+    [SerializeField] private float _fleeAcceleration = 14f;
+    [SerializeField] private float _fleeAngularSpeed = 360f;
 
-
-
-
-
-
-
-    //_____________________
 
     private void Awake()
     {
 
         _agent = GetComponent<NavMeshAgent>();
         _path = new NavMeshPath();
+        SetBaseValues();
+    }
+
+    private void SetBaseValues()
+    {
         _minFleeDistance = _settings.MinFleeDistance;
         _maxFleeDistance = _settings.MaxFleeDistance;
         _fleeDistanceSideOffset = _settings.FleeDistanceSideOffset;
+        _walkSpeed = _settings.WalkSpeed;
+        _walkAcceleration = _settings.WalkAcceleration;
+        _walkAngularSpeed = _settings.WalkAngularSpeed;
+        _fleeSpeed = _settings.FleeSpeed;
+        _fleeAcceleration = _settings.FleeAcceleration;
+        _fleeAngularSpeed = _settings.FleeAngularSpeed;
+    }
+
+    private void Update()
+    {
+        if(_maxFleeDistance<_minFleeDistance)
+        {
+            _maxFleeDistance = _minFleeDistance + 1;
+        }
     }
 
     /// <summary>
@@ -60,7 +87,7 @@ public class SheepMoveBehaviour : MonoBehaviour
     /// <param name="targetPosition"></param>
     public void MoveTo(Vector3 targetPosition)
     {
-        _agent.isStopped = false;
+        _agent.isStopped = false;       
         _agent.SetDestination(targetPosition);
     }
 
@@ -102,6 +129,19 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         Vector3 fleeDirection = (transform.position - threatPosition).normalized;
         return fleeDirection;
+    }
+    public void SetWalkMovement()
+    {
+        _agent.speed = _settings.WalkSpeed;
+        _agent.acceleration = _settings.WalkAcceleration;
+        _agent.angularSpeed = _settings.WalkAngularSpeed;
+    }
+
+    public void SetFleeMovement()
+    {
+        _agent.speed = _settings.FleeSpeed;
+        _agent.acceleration = _settings.FleeAcceleration;
+        _agent.angularSpeed = _settings.FleeAngularSpeed;
     }
 
     public Vector3 TryGetBestFleeTarget(Vector3 threat)
@@ -157,4 +197,5 @@ public class SheepMoveBehaviour : MonoBehaviour
         Debug.Log($"Random flee candidate: {newFleePosition}");
         return newFleePosition;
     }
+
 }

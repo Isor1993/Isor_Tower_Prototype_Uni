@@ -15,8 +15,15 @@ public class SheepSettings : ScriptableObject
     [SerializeField] private int _hungerThreshold = 100;
 
     [Header("Move Behaviour")]
-    [SerializeField] private float _moveSpeed = 3.5f;
-    [SerializeField] private float _fleeDistance = 10f;
+    [Header("Movement Settings")]
+    [SerializeField] private float _walkSpeed = 2f;
+    [SerializeField] private float _walkAcceleration = 4f;
+    [SerializeField] private float _walkAngularSpeed = 120f;
+
+    [Header("Flee Movement Settings")]
+    [SerializeField] private float _fleeSpeed = 6f;
+    [SerializeField] private float _fleeAcceleration = 14f;
+    [SerializeField] private float _fleeAngularSpeed = 360f;
     [SerializeField] private float _minFleeDistance = 8f;
     [SerializeField] private float _maxFleeDistance = 10f;
     [SerializeField] private float _fleeDistanceSideOffset = 10f;
@@ -52,8 +59,14 @@ public class SheepSettings : ScriptableObject
     public int HungerThreshold => _hungerThreshold;
 
     // ===== MOVE BEHAVIOUR =====
-    public float MoveSpeed => _moveSpeed;
-    public float FleeDistance => _fleeDistance;
+    public float WalkSpeed => _walkSpeed;
+    public float WalkAcceleration => _walkAcceleration;
+    public float WalkAngularSpeed => _walkAngularSpeed;
+
+    public float FleeSpeed => _fleeSpeed;
+    public float FleeAcceleration => _fleeAcceleration;
+    public float FleeAngularSpeed => _fleeAngularSpeed;
+
     public float MinFleeDistance => _minFleeDistance;
     public float MaxFleeDistance => _maxFleeDistance;
     public float FleeDistanceSideOffset => _fleeDistanceSideOffset;

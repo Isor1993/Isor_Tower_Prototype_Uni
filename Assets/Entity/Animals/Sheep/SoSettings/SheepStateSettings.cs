@@ -24,11 +24,8 @@ public class SheepStateSettings : ScriptableObject
     [SerializeField] private float _followStoppingDistance = 2f;
 
     [Header("Flee State")]
-    [Tooltip("Distance the sheep tries to flee from danger.")]
-    [SerializeField] private float _fleeDistance = 15f;
-
-    [Tooltip("How long the sheep flees before calming down.")]
-    [SerializeField] private float _fleeDuration = 5f;
+    [Tooltip("")]
+    [SerializeField] private float _updateTickNewPosition = 15f;
 
     [Header("Regroup State")]
     [Tooltip("Distance required before regroup is considered complete.")]
@@ -53,12 +50,13 @@ public class SheepStateSettings : ScriptableObject
     public float FollowStoppingDistance => _followStoppingDistance;
 
     // ===== FLEE =====
-    public float FleeDistance => _fleeDistance;
-    public float FleeDuration => _fleeDuration;
+    public float UpdateTickNewPosition => _updateTickNewPosition;
+
 
     // ===== REGROUP =====
     public float RegroupDistance => _regroupDistance;
 
     // ===== EATING =====
     public float EatDuration => _eatDuration;
+
 }

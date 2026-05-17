@@ -29,7 +29,7 @@ public class OnAlertState : SheepStateBase
 
         if (Sheep.Sense.HasThreat)
         {
-            FSM.ChangeState(new FleeState(Sheep, FSM));
+            FSM.ChangeState(new FleeState(Sheep, FSM,Sheep.Sense.CurrentThreat));
             return;
         }
         if (Sheep.Sense.HasPlayerInRange && Sheep.IsTamed)
@@ -43,7 +43,7 @@ public class OnAlertState : SheepStateBase
 
             if (_reactionTimer.IsFinished(Settings.ReactionTime))
             {
-                FSM.ChangeState(new FleeState(Sheep, FSM));
+                FSM.ChangeState(new FleeState(Sheep, FSM,Sheep.Sense.CurrentPlayer));
                 return;
             }
         }
