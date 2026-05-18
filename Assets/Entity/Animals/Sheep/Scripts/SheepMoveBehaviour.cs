@@ -93,6 +93,7 @@ public class SheepMoveBehaviour : MonoBehaviour
         _agent.SetDestination(targetPosition);
     }
 
+   
     public Vector3 GetValidHerdPosition(Sheep sheep)
     {
         Vector3 herdPosition = sheep.HerdManager.GetHerdPositionForSheep(sheep);

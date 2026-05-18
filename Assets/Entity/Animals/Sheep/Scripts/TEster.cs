@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,13 +10,16 @@ public class TEster : MonoBehaviour
     [SerializeField] private Transform _threat;
     [SerializeField] private SheepMoveBehaviour _move;
     [SerializeField] private SheepSense _sense;
+    [SerializeField] private Sheep Sheep;
     private Vector3 _fleePosition=Vector3.zero;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
     {
         _timer=new Timer();
         _timer.Reset();
+       
         
     }
     void Start()
@@ -29,7 +33,9 @@ public class TEster : MonoBehaviour
         _timer.Tick(Time.deltaTime);
         if (isUpdtate)
         {
-            if (_sense.HasThreat)
+            Vector3 target =_move.GetValidHerdPosition(Sheep);
+            _move.MoveTo(target);
+            /*if (_sense.HasThreat)
             {
                 
                 
@@ -37,6 +43,9 @@ public class TEster : MonoBehaviour
                     _fleePosition = _move.AwayFrom(_threat.position);
                 
             }
+            */
+
+
         }
     }
 

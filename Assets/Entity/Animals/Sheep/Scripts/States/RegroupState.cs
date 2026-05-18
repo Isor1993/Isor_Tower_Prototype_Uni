@@ -9,12 +9,17 @@ public class RegroupState : SheepStateBase
 
     public override void Enter()
     {
-          
+        if(!Sheep.IsCommander)
+        {
+        Vector3 targtePos = Sheep.HerdManager.GetHerdPositionForSheep(Sheep);
+        Sheep.Move.MoveTo(targtePos);
+        }
     }
 
     public override void Tick()
     {
-        if(Sheep.IsHerdMoving)
+
+        if (Sheep.IsHerdMoving)
         {
 
         }
@@ -22,10 +27,10 @@ public class RegroupState : SheepStateBase
         {
 
         }
-       
+
     }
     public override void Exit()
     {
-       
+
     }
 }

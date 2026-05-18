@@ -22,6 +22,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     [SerializeField] private SheepStateSettings _stateSettings;
     [SerializeField] private HerdManager _herdManager;
     public bool IsHerdMoving;
+    
 
     
 

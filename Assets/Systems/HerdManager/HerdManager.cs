@@ -92,4 +92,20 @@ public class HerdManager : MonoBehaviour
       
 
     }
+
+    public bool AreAllSheepInPosition()
+    {
+        for (int i = 0; i < _herdPool.Count; i++)
+        {
+            Sheep sheep = _herdPool[i];
+
+            if (sheep == null)
+                continue;
+
+            if (!sheep.Move.HasReachedDestination())
+                return false;
+        }
+
+        return true;
+    }
 }
