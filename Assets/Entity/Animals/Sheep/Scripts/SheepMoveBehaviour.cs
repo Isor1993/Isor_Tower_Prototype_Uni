@@ -96,7 +96,7 @@ public class SheepMoveBehaviour : MonoBehaviour
    
     public Vector3 GetValidHerdPosition(Sheep sheep)
     {
-        Vector3 herdPosition = sheep.HerdManager.GetHerdPositionForSheep(sheep);
+        Vector3 herdPosition = sheep.HerdManager.GetFormationPositionForNormalSheep(sheep);
 
         if (!NavMesh.SamplePosition(herdPosition, out NavMeshHit hit, _sampleradius, _agent.areaMask))
         {

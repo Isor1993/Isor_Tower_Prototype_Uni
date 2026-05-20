@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.VFX;
 
 
 public enum SheepTyp
@@ -21,7 +23,14 @@ public class Sheep : MonoBehaviour, IDayNightListener
     [SerializeField] private bool _isTamed = false;
     [SerializeField] private SheepStateSettings _stateSettings;
     [SerializeField] private HerdManager _herdManager;
+    private NavMeshAgent _agent;
     public bool IsHerdMoving;
+    [SerializeField] private Vector3 _graveyardPosition;
+    [SerializeField] private Vector3 _spawnPosition;
+    [SerializeField] private float _spawnTime;
+
+    public bool IsAlive=>Health.IsAlive;
+    private float _elapsedTime;
     
 
     
@@ -59,6 +68,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Hunger = GetComponent<SheepHunger>();
         Sense = GetComponent<SheepSense>();
         Move=GetComponent<SheepMoveBehaviour>();
+        _agent = GetComponent<NavMeshAgent>();
         FSM = new SheepFSM();        
         Typ = Settings.Typ;
 
@@ -82,7 +92,18 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     private void Update()
     {        
+        
         FSM.Tick();
+        if(!IsAlive)
+        {
+            _elapsedTime = Time.deltaTime;
+            FSM.ChangeState(new DeadState(this,FSM));
+            HandleDeath();
+            if(_elapsedTime>=_spawnTime)
+            {
+                HandleSpawn();
+            }
+        }
         
 
 
@@ -106,6 +127,25 @@ public class Sheep : MonoBehaviour, IDayNightListener
             _isSleeping = false;
             Debug.Log("Sheep => Awake");
         }
+    }
+
+    private void HandleDeath()
+    {
+        _agent.enabled = false;
+        Move.enabled = false;
+        Sense.enabled = false;
+        Hunger.enabled = false;
+        transform.position = _graveyardPosition;        
+
+    }
+
+    private void HandleSpawn()
+    {
+        _agent.enabled = true;
+        Move.enabled = true;
+        Sense.enabled = true;
+        Hunger.enabled = true;
+        transform.position = _spawnPosition;
     }
    
 }

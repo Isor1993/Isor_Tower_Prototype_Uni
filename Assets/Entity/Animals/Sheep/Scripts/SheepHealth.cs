@@ -45,7 +45,7 @@ public class SheepHealth : MonoBehaviour
     private void Awake()
     {
         SetBaseValues();
-    }
+    }  
 
     /// <summary>
     /// Loads initial health configuration from the SheepSettings ScriptableObject.
