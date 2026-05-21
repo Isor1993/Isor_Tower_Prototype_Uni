@@ -11,7 +11,7 @@ public class RegroupState : SheepStateBase
     {
         if(!Sheep.IsCommander&&Sheep.IsHerdMoving)
         {
-        Vector3 targtePos = Sheep.HerdManager.GetFormationPositionForNormalSheep(SheepS);
+        Vector3 targtePos = Sheep.HerdManager.GetFormationPositionForSheep(Sheep);
         Sheep.Move.MoveTo(targtePos);
         }
         if(!Sheep.IsCommander&&!Sheep.IsHerdMoving)

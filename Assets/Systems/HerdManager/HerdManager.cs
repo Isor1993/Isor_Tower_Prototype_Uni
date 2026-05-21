@@ -11,12 +11,15 @@ public class HerdManager : MonoBehaviour
     [Tooltip("All sheep that belong to this herd.")]
     [SerializeField] private List<Sheep> _herdPool = new List<Sheep>();
 
+    [SerializeField] private Vector3[] _slotOffsets;
     [SerializeField] private float _regroupRadius;
     [SerializeField] private float _patrolRadius;
-    [SerializeField] private Vector3[] _slotOffsets;
+    [SerializeField] private float _spawnRadius;
     [Header("Gizmo Settings")]
     [SerializeField] private bool _showGizmo = false;
     [SerializeField] private Color _patrolRadiusColor;
+    [SerializeField] private Color _regroupRadiusColor;
+    [SerializeField] private Color _spawnRadiusColor;
 
 
 
@@ -108,17 +111,27 @@ public class HerdManager : MonoBehaviour
     }
 
 
-    public Vector3 GetFormationPositionForNormalSheep(Sheep sheep)
+    public Vector3 GetFormationPositionForSheep(Sheep sheep)
     {
         Vector3 anchor = GetHerdAnchorPosition();
 
+        if (!IsHerdMember(sheep))
+            return anchor;
+
         if (sheep == null)
+            return anchor;
+        if (!_herdPool.Contains(sheep))
+        {
+            Debug.LogWarning($"{name}: Sheep {sheep.name} is not part of this herd.");
+            return anchor;
+        }
+        if (sheep == _commander)
             return anchor;
 
         if (!sheep.IsAlive)
             return sheep.transform.position;
 
-        int aliveIndex = GetAliveSheepIndex(sheep);
+        int aliveIndex = GetAliveNormalSheepIndex(sheep);
 
         if (aliveIndex < 0)
         {
@@ -146,23 +159,32 @@ public class HerdManager : MonoBehaviour
 
     public Vector3 GetRandomRegroupPosition()
     {
+        return GetRandomPositionInRadius(_regroupRadius);
+    }
+
+
+    public Vector3 GetRandomPatrolPosition()
+    {
+        return GetRandomPositionInRadius(_patrolRadius);
+
+    }
+    public Vector3 GetRandomSpawnPosition()
+    {
+        return GetRandomPositionInRadius(_spawnRadius);
+
+    }
+
+    private Vector3 GetRandomPositionInRadius(float radius)
+    {
         Vector3 anchor = GetHerdAnchorPosition();
 
-        Vector2 randomCircle = Random.insideUnitCircle * _regroupRadius;
+        Vector2 randomCircle = Random.insideUnitCircle * radius;
         Vector3 randomOffset = new Vector3(randomCircle.x, 0f, randomCircle.y);
 
         return anchor + randomOffset;
     }
-    public Vector3 GetRandomPatrolPosition()
-    {
-        Vector3 anchor = GetHerdAnchorPosition();
-        Vector2 randomCircle = Random.insideUnitCircle * _patrolRadius;
-        Vector3 randomOffset = new Vector3(randomCircle.x, 0, randomCircle.y);
-        return anchor + randomOffset;
 
-    }
-
-    private int GetAliveSheepIndex(Sheep targetSheep)
+    private int GetAliveNormalSheepIndex(Sheep targetSheep)
     {
         int aliveIndex = 0;
 
@@ -172,6 +194,8 @@ public class HerdManager : MonoBehaviour
                 continue;
 
             if (!sheep.IsAlive)
+                continue;
+            if (sheep == _commander)
                 continue;
 
             if (sheep == targetSheep)
@@ -202,12 +226,43 @@ public class HerdManager : MonoBehaviour
         return true;
     }
 
+    public Vector3 GetInactivePosition()
+    {
+        return Vector3.zero;
+    }
+    public void NotifySheepRespawned(Sheep sheep)
+    {
+
+    }
+    public Vector3 GetRespawnPositionForSheep(Sheep sheep)
+    {
+        if (sheep == null)
+            return GetHerdAnchorPosition();
+        if (!IsHerdMember(sheep))
+            return sheep.transform.position; 
+        return GetRandomSpawnPosition();
+    }
+    private bool IsHerdMember(Sheep sheep)
+    {
+        return sheep != null && _herdPool.Contains(sheep);
+    }
+
+
     private void OnDrawGizmos()
     {
         if (_showGizmo)
         {
             Gizmos.color = _patrolRadiusColor;
-            Gizmos.DrawWireSphere(_lastHerdAnchorPosition, _patrolRadius);
+            Vector3 anchor = Application.isPlaying ? GetHerdAnchorPosition() : transform.position;
+            Gizmos.DrawWireSphere(anchor, _patrolRadius);
+
+            Gizmos.color = _spawnRadiusColor;
+            Vector3 anchor = Application.isPlaying ? GetHerdAnchorPosition() : transform.position;
+            Gizmos.DrawWireSphere(anchor, _spawnRadius);
+
+            Gizmos.color = _regroupRadiusColor;
+            Vector3 anchor = Application.isPlaying ? GetHerdAnchorPosition() : transform.position;
+            Gizmos.DrawWireSphere(anchor, _regroupRadius);
         }
     }
 }
