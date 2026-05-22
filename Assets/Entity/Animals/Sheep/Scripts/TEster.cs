@@ -33,8 +33,7 @@ public class TEster : MonoBehaviour
         _timer.Tick(Time.deltaTime);
         if (isUpdtate)
         {
-            Vector3 target =_move.GetValidHerdPosition(Sheep);
-            _move.MoveTo(target);
+           
             /*if (_sense.HasThreat)
             {
                 

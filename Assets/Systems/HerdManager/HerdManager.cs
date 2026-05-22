@@ -97,14 +97,7 @@ public class HerdManager : MonoBehaviour
 
         if (!IsHerdMember(sheep))
             return anchor;
-
-        if (sheep == null)
-            return anchor;
-        if (!_herdPool.Contains(sheep))
-        {
-            Debug.LogWarning($"{name}: Sheep {sheep.name} is not part of this herd.");
-            return anchor;
-        }
+        
         if (sheep == _commander)
             return anchor;
 

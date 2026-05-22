@@ -1,8 +1,17 @@
-using System.Runtime.CompilerServices;
+/*****************************************************************************
+* Project : Isors Tower Prototype
+* File    : Sheep.cs
+* Date    : 20.02.2026
+* Author  : Eric Rosenberg
+*
+* Description :
+*
+*
+* History :
+* 20.02.2026 ER Created
+******************************************************************************/
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.VFX;
-
 
 public enum SheepTyp
 {
