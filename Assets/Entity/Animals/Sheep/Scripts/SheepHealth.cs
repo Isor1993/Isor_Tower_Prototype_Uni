@@ -6,9 +6,9 @@
 *
 * Description :
 * Manages the health system for a sheep entity.
-* Loads health-related values from the SheepSettings ScriptableObject,
-* provides access to the current and maximum health values, and handles
-* damage, healing, and life state checks.
+* Loads health-related values from SheepSettings, provides access to the
+* current and maximum health values, handles typed damage and healing, and
+* raises events when the sheep takes damage or dies.
 *
 * History :
 * 20.02.2026 ER Created
@@ -17,21 +17,30 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Controls the health values of a sheep and provides methods for taking damage,
-/// healing, restoring health, and notifying other systems when the sheep dies.
+/// Controls the health values of a sheep and provides damage, healing,
+/// full restoration, and death notification functionality.
 /// </summary>
-public class SheepHealth : MonoBehaviour
+public class SheepHealth : MonoBehaviour,IDamagable
 {
     [Tooltip("ScriptableObject that contains the base health configuration for this sheep.")]
     [SerializeField] SheepSettings settings;
 
-    private int _maxHealth;
-    private int _currentHealth;
+    [Tooltip("Maximum health value this sheep can have."),Range(1,100)]
+    [SerializeField] private int _maxHealth;
+
+    [Tooltip("Current health value of this sheep.")]
+    [SerializeField] private int _currentHealth;
 
     /// <summary>
     /// Raised once when the sheep's health reaches zero.
     /// </summary>
-    public event Action OnDied;    
+    public event Action OnDied;
+
+    /// <summary>
+    /// Raised whenever the sheep receives valid damage.
+    /// Provides the applied damage amount and the damage type.
+    /// </summary>
+    public event Action<int,DamageType> OnDamaged;
 
     /// <summary>
     /// Gets the current health value of the sheep.
@@ -44,8 +53,8 @@ public class SheepHealth : MonoBehaviour
     public int MaxHealth => _maxHealth;
 
     /// <summary>
-    /// Indicates whether the sheep is alive.
-    /// Returns true if current health is greater than zero.
+    /// Indicates whether the sheep is currently alive.
+    /// Returns true when the current health value is greater than zero.
     /// </summary>
     public bool IsAlive => _currentHealth > 0;
 
@@ -55,12 +64,12 @@ public class SheepHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads initial health configuration from the SheepSettings ScriptableObject.
+    /// Loads the initial health configuration from the SheepSettings ScriptableObject.
     /// Sets maximum health and initializes current health.
     /// </summary>
     private void SetBaseValues()
     {
-        if(settings=null)
+        if(settings==null)
         {
             Debug.LogError($"{name}: No SheepSettings assigned.");
             return;
@@ -70,17 +79,21 @@ public class SheepHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies damage to the sheep if it is alive and the damage amount is valid.
-    /// Clamps the current health value to zero and triggers death when health is depleted.
+    /// Applies typed damage to the sheep if it is alive and the damage amount is valid.
+    /// Raises the damage event and triggers death when health reaches zero.
     /// </summary>
     /// <param name="damage">The amount of damage to apply.</param>
-    public void TakeDamage(int damage)
+    /// <param name="damageType">The type of damage being applied.</param>
+    public void TakeDamage(int damage, DamageType damageType)
     {
         if (!IsAlive)
             return;
+
         if (damage <= 0)
             return;
+
         _currentHealth -= damage;
+        OnDamaged?.Invoke(damage,damageType);
 
         if (_currentHealth <= 0)
         {
@@ -102,6 +115,7 @@ public class SheepHealth : MonoBehaviour
             return;
 
         _currentHealth += heal;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
 
         if (_currentHealth > _maxHealth)
         {
@@ -123,5 +137,5 @@ public class SheepHealth : MonoBehaviour
     private void Die()
     {
         OnDied?.Invoke();
-    }
+    }    
 }

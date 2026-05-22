@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.VFX;
@@ -80,35 +81,38 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     private void OnEnable()
     {
-        if (_eventManager == null) return;
-        _eventManager.Subscribe(this);
-        Health.OnDied += HandleDeath;
+        if (_eventManager != null)
+            _eventManager.Subscribe(this);
+
+        if (Health != null)
+        {
+            Health.OnDied += HandleDeath;
+            Health.OnDamaged += HandleDamage;
+        }
+
+        if (Hunger != null)
+            Hunger.OnStarving += HandleStarving;
     }
 
     private void OnDisable()
     {
-        if (_eventManager == null) return;
-        _eventManager.Unsubscribe(this);
-        Health.OnDied -= HandleDeath;
+        if (_eventManager != null)
+            _eventManager.Unsubscribe(this);
+
+        if (Health != null)
+        {
+            Health.OnDied -= HandleDeath;
+            Health.OnDamaged -= HandleDamage;
+        }
+
+        if (Hunger != null)
+            Hunger.OnStarving -= HandleStarving;
     }
 
-    private void Update()
-    {        
-        
-        FSM.Tick();
-        if(!IsAlive)
-        {
-            _elapsedTime = Time.deltaTime;
-            FSM.ChangeState(new DeadState(this,FSM));
-            HandleDeath();
-            if(_elapsedTime>=_spawnTime)
-            {
-                HandleSpawn();
-            }
-        }
-        
 
-        
+    private void Update()
+    {                
+        FSM.Tick();  
     }
 
     /// <summary>
@@ -137,7 +141,8 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Move.enabled = false;
         Sense.enabled = false;
         Hunger.enabled = false;
-        transform.position = _graveyardPosition;        
+        FSM.ChangeState(new DeadState(this, FSM));
+        transform.position = _graveyardPosition;
 
     }
 
@@ -147,7 +152,21 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Move.enabled = true;
         Sense.enabled = true;
         Hunger.enabled = true;
+        FSM.ChangeState(new IdleState(this, FSM));
         transform.position = _spawnPosition;
     }
-   
+
+    private void HandleStarving(DamageType damageType)
+    { 
+        Health.TakeDamage(Hunger.StarvationDamage,damageType);
+      
+    }
+    private void HandleDamage(int damage,DamageType damageType)
+    {
+        if (damageType == DamageType.Starvation)
+            return;
+        FSM.ChangeState(new FleeState(this,FSM,Sense.CurrentThreat));  
+    }
+  
+ 
 }

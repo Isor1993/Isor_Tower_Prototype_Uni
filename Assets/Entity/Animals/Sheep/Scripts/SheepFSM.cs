@@ -17,6 +17,6 @@ public class SheepFSM
     public void Tick()
     {
         _currentState?.Tick();
-    }
+    }  
 
 }

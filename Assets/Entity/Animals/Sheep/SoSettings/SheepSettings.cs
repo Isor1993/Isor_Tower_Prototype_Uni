@@ -12,7 +12,10 @@ public class SheepSettings : ScriptableObject
     [Header("Hunger")]
     [SerializeField] private float _hungerTickInterval = 10f;
     [SerializeField] private int _hungerTickRate = 4;
-    [SerializeField] private int _hungerThreshold = 100;
+    [SerializeField] private int _eatTickRate = 4;
+    [SerializeField] private int _hungerThreshhold = 50;
+    [SerializeField] private int _maxHunger = 100;
+    [SerializeField] private int _starvationDamage = 1;
 
     [Header("Move Behaviour")]
     [Header("Movement Settings")]
@@ -56,7 +59,10 @@ public class SheepSettings : ScriptableObject
 
     public float HungerTickInterval => _hungerTickInterval;
     public int HungerTick => _hungerTickRate;
-    public int HungerThreshold => _hungerThreshold;
+    public int HungerThreshhold => _hungerThreshhold;
+    public int MaxHunger => _maxHunger;
+    public int StarvationDamage => _starvationDamage;
+    public int EatTickRate => _eatTickRate;
 
     // ===== MOVE BEHAVIOUR =====
     public float WalkSpeed => _walkSpeed;
@@ -90,4 +96,5 @@ public class SheepSettings : ScriptableObject
     public Color ColorPlayer => _colorPlayer;
     public Color ColorCommander => _colorCommander;
 
+    
 }

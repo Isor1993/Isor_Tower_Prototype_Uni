@@ -5,10 +5,10 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-* Handles the hunger system for a sheep entity.
-* Loads hunger-related values from the SheepSettings ScriptableObject,
-* decreases the current hunger value over time with a timer-based tick system,
-* and provides state properties to determine whether the sheep is hungry or full.
+* Manages the hunger system for a sheep entity.
+* Loads hunger-related values from SheepSettings, increases hunger over time,
+* allows hunger to be reduced through eating, and raises a starvation event
+* when the sheep reaches the maximum hunger value.
 *
 * History :
 * 20.02.2026 ER Created
@@ -17,32 +17,57 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Controls the hunger values of a sheep and updates them over time.
+/// Controls the hunger values of a sheep and notifies other systems when the sheep starts starving.
 /// </summary>
 public class SheepHunger : MonoBehaviour
 {
     [Tooltip("ScriptableObject that contains the base hunger configuration for this sheep.")]
     [SerializeField] SheepSettings settings;
 
-    private int _maxHunger;
-    private int _currentHunger;
-    private float _hungerTickInterval;
-    private int _hungerTick;
-    private int _eatTick;
-    private int _hungerThreshold;   
+    [Tooltip("Maximum hunger value the sheep can reach before it is considered starving."), Range(1, 100)]
+    [SerializeField] private int _maxHunger;
+    [Tooltip("Current hunger value of the sheep. Higher values mean the sheep is more hungry."), Range(1, 100)]
+    [SerializeField] private int _currentHunger;
+    [Tooltip("Time interval in seconds between two hunger ticks."), Range(1f, 100f)]
+    [SerializeField] private float _hungerTickInterval;
+    [Tooltip("Amount of hunger added each time a hunger tick is applied."), Range(1, 10)]
+    [SerializeField] private int _hungerTick;
+    [Tooltip("Amount of hunger removed each time the sheep eats."), Range(1, 20)]
+    [SerializeField] private int _eatTick;
+    [Tooltip("Hunger value at which the sheep is considered hungry."), Range(1, 100)]
+    [SerializeField] private int _hungerThreshold;
+    [Tooltip("Damage amount applied when the sheep is starving."), Range(1, 100)]
+    [SerializeField] private int _starvationDamage;
+
     private float _hungerTimer;
-    public event Action<int> OnStarving;
-    /// <summary>
-    /// Indicates whether the sheep is currently hungry.
-    /// Returns true when the current hunger value is below the defined hunger threshold.
-    /// </summary>
-    public bool IsHungry => _currentHunger < _hungerThreshold;
 
     /// <summary>
-    /// Indicates whether the sheep currently has enough hunger value to be considered full.
-    /// Returns true when the current hunger value is greater than or equal to the hunger threshold.
+    /// Raised when the sheep reaches starvation and should receive starvation damage.
+    /// Provides the damage type that caused the starvation event.
     /// </summary>
-    public bool IsFull => _currentHunger >= _hungerThreshold;
+    public event Action<DamageType> OnStarving;
+    /// <summary>
+    /// Indicates whether the sheep is currently hungry.
+    /// Returns true when the current hunger value is greater than the hunger threshold.
+    /// </summary>
+    public bool IsHungry => _currentHunger > _hungerThreshold;
+
+    /// <summary>
+    /// Indicates whether the sheep is currently full.
+    /// Returns true when the current hunger value is zero or below.
+    /// </summary>
+    public bool IsFull => _currentHunger <= 0;
+
+    /// <summary>
+    /// Indicates whether the sheep is currently starving.
+    /// Returns true when the current hunger value has reached or exceeded the maximum hunger value.
+    /// </summary>
+    public bool IsStarving => _currentHunger >= _maxHunger;
+
+    /// <summary>
+    /// Gets the amount of damage caused by starvation.
+    /// </summary>
+    public int StarvationDamage => _starvationDamage;
 
     private void Awake()
     {
@@ -50,49 +75,59 @@ public class SheepHunger : MonoBehaviour
     }
 
     /// <summary>
-    /// Increases the current hunger value when the sheep eats.
+    /// Reduces the sheep's current hunger value by the configured eat tick amount.
+    /// The resulting hunger value is clamped between zero and the maximum hunger value.
     /// </summary>
     public void Eat()
-    {      
-        _currentHunger += Mathf.Clamp(_eatTick, 0, _maxHunger);
+    {
+        _eatTick = Mathf.Max(_eatTick, 0);
+        _currentHunger -= _eatTick;
+        _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
     }
 
     /// <summary>
     /// Loads the initial hunger configuration from the SheepSettings ScriptableObject.
-    /// Sets the maximum hunger, current hunger, tick interval, tick amount, and hunger threshold.
+    /// Sets maximum hunger, current hunger, tick interval, hunger tick amount,
+    /// eat tick amount, hunger threshold, and starvation damage.
     /// </summary>
     private void SetBaseValue()
     {
-        _maxHunger = settings.HungerThreshold;
-        _currentHunger = _maxHunger;
+        if (settings == null)
+        {
+            Debug.LogError("Settings referenz is missing!");
+            return;
+        }
+        _maxHunger = settings.MaxHunger;
+        _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
         _hungerTickInterval = settings.HungerTickInterval;
         _hungerTick = settings.HungerTick;
-        _hungerThreshold = settings.HungerThreshold;
+        _eatTick = settings.EatTickRate;
+        _hungerThreshold = settings.HungerThreshhold;
+        _starvationDamage = settings.StarvationDamage;
     }
 
     private void Update()
     {
         _hungerTimer += Time.deltaTime;
-        if(_hungerTimer>=_hungerTickInterval)
+        if (_hungerTimer >= _hungerTickInterval)
         {
             _hungerTimer = 0;
-            ApllyHungerTick();
-        }     
+            ApplyHungerTick();
+            if (IsStarving)
+            {
+                OnStarving?.Invoke(DamageType.Starvation);
+            }
+        }
     }
 
     /// <summary>
-    /// Reduces the current hunger value by the configured hunger tick amount.
-    /// Ensures that the hunger value does not drop below zero.
+    /// Updates the hunger timer and applies a hunger tick when the configured interval is reached.
+    /// Triggers the starvation event when the sheep reaches the starvation state.
     /// </summary>
-    private void ApllyHungerTick()
+    private void ApplyHungerTick()
     {
-        _currentHunger -= _hungerTick;
-        if (_currentHunger < 0)
-        {
-            
-            _currentHunger = 0;
-        }
-       
-    } 
-    
+        _currentHunger += _hungerTick;
+        _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
+    }
+
 }
