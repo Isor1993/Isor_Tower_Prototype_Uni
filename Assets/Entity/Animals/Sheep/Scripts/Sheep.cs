@@ -5,7 +5,10 @@
 * Author  : Eric Rosenberg
 *
 * Description :
-*
+* Represents a sheep entity and acts as the central access point for its
+* core components, including sensing, hunger, health, movement, and FSM logic.
+* Handles lifecycle events such as damage, death, spawning, starvation, and
+* day-night phase changes.
 *
 * History :
 * 20.02.2026 ER Created
@@ -13,76 +16,131 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Defines the role of a sheep inside a herd.
+/// </summary>
 public enum SheepTyp
 {
     Normal,
     Commander
 }
 
+/// <summary>
+/// Central sheep entity that connects all sheep-related components and controls
+/// state transitions based on health, hunger, damage, and day-night events.
+/// </summary>
 [RequireComponent(typeof(SheepSense))]
 [RequireComponent(typeof(SheepHunger))]
 [RequireComponent(typeof(SheepHealth))]
 [RequireComponent(typeof(SheepMoveBehaviour))]
 public class Sheep : MonoBehaviour, IDayNightListener
 {
-    [SerializeField]private DayNightCycleEventManager _eventManager;
+    [Header("Settings")]
+    [Tooltip("ScriptableObject that contains the base configuration for this sheep.")]
     [SerializeField] SheepSettings _settings;
-
-    private bool _isSleeping = false;
-    private bool _hasFear = false;
+    [Tooltip("Event manager used to subscribe this sheep to day-night phase change events.")]
+    [SerializeField] private DayNightCycleEventManager _eventManager;
+    [Tooltip("Determines whether this sheep is currently tamed by the player.")]
     [SerializeField] private bool _isTamed = false;
+    [Tooltip("ScriptableObject that contains FSM state-related settings for this sheep.")]
     [SerializeField] private SheepStateSettings _stateSettings;
+    [Tooltip("Herd manager that controls herd-level behavior and positioning for this sheep.")]
     [SerializeField] private HerdManager _herdManager;
-    private NavMeshAgent _agent;
-    public bool IsHerdMoving;
+    [Tooltip("World position where the sheep is moved after dying.")]
     [SerializeField] private Vector3 _graveyardPosition;
+    [Tooltip("World position where the sheep is placed when it respawns.")]
     [SerializeField] private Vector3 _spawnPosition;
+    [Tooltip("Time in seconds before the sheep should respawn after death."), Range(1, 1000)]
     [SerializeField] private float _spawnTime;
 
-    public bool IsAlive=>Health.IsAlive;
-    private float _elapsedTime;
-    
 
-    
+    /// <summary>
+    /// Indicates whether this sheep is currently moving as part of herd movement.
+    /// </summary>
+    public bool IsHerdMoving;
 
+    private NavMeshAgent _agent;
+    private bool _isSleeping = false;
+
+    /// <summary>
+    /// Indicates whether this sheep is currently alive.
+    /// </summary>
+    public bool IsAlive => Health.IsAlive;
+
+    /// <summary>
+    /// Gets the herd manager assigned to this sheep.
+    /// </summary>
     public HerdManager HerdManager => _herdManager;
 
-
+    /// <summary>
+    /// Gets the movement component used by this sheep.
+    /// </summary>
     public SheepMoveBehaviour Move { get; private set; }
+
+    /// <summary>
+    /// Gets the health component used by this sheep.
+    /// </summary>
     public SheepHealth Health { get; private set; }
 
+    /// <summary>
+    /// Gets the hunger component used by this sheep.
+    /// </summary>
     public SheepHunger Hunger { get; private set; }
 
+    /// <summary>
+    /// Gets the sensing component used by this sheep.
+    /// </summary>
     public SheepSense Sense { get; private set; }
 
+    /// <summary>
+    /// Gets the finite state machine that controls this sheep's current behavior.
+    /// </summary>
     public SheepFSM FSM { get; private set; }
 
+    /// <summary>
+    /// Gets the base settings assigned to this sheep.
+    /// </summary>
     public SheepSettings Settings => _settings;
 
+    /// <summary>
+    /// Gets the type of this sheep inside the herd.
+    /// </summary>
     public SheepTyp Typ { get; private set; }
 
+    /// <summary>
+    /// Gets the state settings assigned to this sheep.
+    /// </summary>
     public SheepStateSettings StateSettings => _stateSettings;
 
+    /// <summary>
+    /// Indicates whether this sheep is the commander of its herd.
+    /// </summary>
     public bool IsCommander => Typ == SheepTyp.Commander;
 
+    /// <summary>
+    /// Indicates whether this sheep is currently asleep.
+    /// </summary>
     public bool IsAsleep => _isSleeping;
 
+    /// <summary>
+    /// Indicates whether this sheep is currently tamed by the player.
+    /// </summary>
     public bool IsTamed => _isTamed;
-
-    public bool HasFear => _hasFear;
+   
 
     private void Awake()
     {
-        
+
         Health = GetComponent<SheepHealth>();
         Hunger = GetComponent<SheepHunger>();
         Sense = GetComponent<SheepSense>();
-        Move=GetComponent<SheepMoveBehaviour>();
+        Move = GetComponent<SheepMoveBehaviour>();
         _agent = GetComponent<NavMeshAgent>();
-        FSM = new SheepFSM();        
+        FSM = new SheepFSM();
         Typ = Settings.Typ;
 
     }
+
     private void Start()
     {
         FSM.ChangeState(new RegroupState(this, FSM)); //TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTTT
@@ -120,15 +178,15 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
 
     private void Update()
-    {                
-        FSM.Tick();  
+    {
+        FSM.Tick();
     }
 
     /// <summary>
-    /// 
+    /// Reacts to day-night phase changes and toggles the sheep's sleeping state.
     /// </summary>
-    /// <param name="previousphase"></param>
-    /// <param name="currentPhase"></param>
+    /// <param name="previousphase">The previous day phase before the change.</param>
+    /// <param name="currentPhase">The new current day phase after the change.</param>
     public void OnDayPhaseChanged(DayPhase previousphase, DayPhase currentPhase)
     {
         Debug.Log("Sheep reacting on changed DayPhase");
@@ -144,6 +202,10 @@ public class Sheep : MonoBehaviour, IDayNightListener
         }
     }
 
+    /// <summary>
+    /// Handles sheep death by disabling active behavior components,
+    /// switching to the dead state, and moving the sheep to the graveyard position.
+    /// </summary>
     private void HandleDeath()
     {
         _agent.enabled = false;
@@ -155,6 +217,10 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     }
 
+    /// <summary>
+    /// Handles sheep spawning by re-enabling behavior components,
+    /// switching to the idle state, and moving the sheep to the spawn position.
+    /// </summary>
     private void HandleSpawn()
     {
         _agent.enabled = true;
@@ -165,17 +231,25 @@ public class Sheep : MonoBehaviour, IDayNightListener
         transform.position = _spawnPosition;
     }
 
+    /// <summary>
+    /// Applies starvation damage to the sheep when the hunger system raises a starvation event.
+    /// </summary>
+    /// <param name="damageType">The damage type used for starvation damage.</param>
     private void HandleStarving(DamageType damageType)
-    { 
-        Health.TakeDamage(Hunger.StarvationDamage,damageType);
-      
+    {
+        Health.TakeDamage(Hunger.StarvationDamage, damageType);
+
     }
-    private void HandleDamage(int damage,DamageType damageType)
+
+    /// <summary>
+    /// Reacts to non-starvation damage by switching the sheep into the flee state.
+    /// </summary>
+    /// <param name="damage">The amount of damage received.</param>
+    /// <param name="damageType">The type of damage received.</param>
+    private void HandleDamage(int damage, DamageType damageType)
     {
         if (damageType == DamageType.Starvation)
             return;
-        FSM.ChangeState(new FleeState(this,FSM,Sense.CurrentThreat));  
+        FSM.ChangeState(new FleeState(this, FSM, Sense.CurrentThreat));
     }
-  
- 
 }

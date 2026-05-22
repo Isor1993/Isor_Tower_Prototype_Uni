@@ -65,27 +65,7 @@ public class SheepMoveBehaviour : MonoBehaviour
         _fleePath = new NavMeshPath();
         _validPath = new NavMeshPath();
         SetBaseValues();
-    }
-    /// <summary>
-    /// Loads movement and flee configuration values from the assigned SheepSettings ScriptableObject.
-    /// </summary>
-    private void SetBaseValues()
-    {
-        if (_settings == null)
-        {
-            Debug.LogError($"{name}: No SheepSettings assigned.");
-            return;
-        }
-        _minFleeDistance = _settings.MinFleeDistance;
-        _maxFleeDistance = _settings.MaxFleeDistance;
-        _fleeDistanceSideOffset = _settings.FleeDistanceSideOffset;
-        _walkSpeed = _settings.WalkSpeed;
-        _walkAcceleration = _settings.WalkAcceleration;
-        _walkAngularSpeed = _settings.WalkAngularSpeed;
-        _fleeSpeed = _settings.FleeSpeed;
-        _fleeAcceleration = _settings.FleeAcceleration;
-        _fleeAngularSpeed = _settings.FleeAngularSpeed;
-    }
+    }   
 
     private void OnValidate()
     {
@@ -160,21 +140,12 @@ public class SheepMoveBehaviour : MonoBehaviour
     }
 
     /// <summary>
-    /// Calculates the normalized direction pointing away from a threat position.
-    /// </summary>
-    /// <param name="threatPosition">The world position of the threat.</param>
-    /// <returns>A normalized direction vector pointing away from the threat.</returns>
-    private Vector3 GetFleeDirection(Vector3 threatPosition)
-    {
-        Vector3 fleeDirection = (transform.position - threatPosition).normalized;
-        return fleeDirection;
-    }
-
-    /// <summary>
     /// Applies normal walking movement values to the NavMeshAgent.
     /// </summary>
     public void SetWalkMovement()
     {
+        if (_agent == null || !_agent.enabled)
+            return;
         _agent.speed = _walkSpeed;
         _agent.acceleration = _walkAcceleration;
         _agent.angularSpeed = _walkAngularSpeed;
@@ -185,6 +156,8 @@ public class SheepMoveBehaviour : MonoBehaviour
     /// </summary>
     public void SetFleeMovement()
     {
+        if (_agent == null || !_agent.enabled)
+            return;
         _agent.speed = _fleeSpeed;
         _agent.acceleration = _fleeAcceleration;
         _agent.angularSpeed = _fleeAngularSpeed;
@@ -242,7 +215,7 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         validPosition = transform.position;
 
-        if (!_agent.enabled)
+        if (_agent == null || !_agent.enabled)
             return false;
 
         if (!NavMesh.SamplePosition(wantedPosition, out NavMeshHit hit, _sampleRadius, _agent.areaMask))
@@ -257,6 +230,40 @@ public class SheepMoveBehaviour : MonoBehaviour
         validPosition = hit.position;
         return true;
     }
+
+    /// <summary>
+    /// Loads movement and flee configuration values from the assigned SheepSettings ScriptableObject.
+    /// </summary>
+    private void SetBaseValues()
+    {
+        if (_settings == null)
+        {
+            Debug.LogError($"{name}: No SheepSettings assigned.");
+            return;
+        }
+        _minFleeDistance = _settings.MinFleeDistance;
+        _maxFleeDistance = _settings.MaxFleeDistance;
+        _fleeDistanceSideOffset = _settings.FleeDistanceSideOffset;
+        _walkSpeed = _settings.WalkSpeed;
+        _walkAcceleration = _settings.WalkAcceleration;
+        _walkAngularSpeed = _settings.WalkAngularSpeed;
+        _fleeSpeed = _settings.FleeSpeed;
+        _fleeAcceleration = _settings.FleeAcceleration;
+        _fleeAngularSpeed = _settings.FleeAngularSpeed;
+    }
+
+    /// <summary>
+    /// Calculates the normalized direction pointing away from a threat position.
+    /// </summary>
+    /// <param name="threatPosition">The world position of the threat.</param>
+    /// <returns>A normalized direction vector pointing away from the threat.</returns>
+    private Vector3 GetFleeDirection(Vector3 threatPosition)
+    {
+        Vector3 fleeDirection = (transform.position - threatPosition).normalized;
+        return fleeDirection;
+    }
+
+    
 
     /// <summary>
     /// Creates a random flee candidate position away from the threat with an additional sideways offset.
