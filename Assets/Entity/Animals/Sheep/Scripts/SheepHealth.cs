@@ -13,10 +13,12 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+using System;
 using UnityEngine;
 
 /// <summary>
-/// Controls the health values of a sheep and provides methods for taking damage and healing.
+/// Controls the health values of a sheep and provides methods for taking damage,
+/// healing, restoring health, and notifying other systems when the sheep dies.
 /// </summary>
 public class SheepHealth : MonoBehaviour
 {
@@ -27,6 +29,11 @@ public class SheepHealth : MonoBehaviour
     private int _currentHealth;
 
     /// <summary>
+    /// Raised once when the sheep's health reaches zero.
+    /// </summary>
+    public event Action OnDied;    
+
+    /// <summary>
     /// Gets the current health value of the sheep.
     /// </summary>
     public int CurrentHealth => _currentHealth;
@@ -34,7 +41,7 @@ public class SheepHealth : MonoBehaviour
     /// <summary>
     /// Gets the maximum health value of the sheep.
     /// </summary>
-    public int MaxHealth=>_maxHealth;
+    public int MaxHealth => _maxHealth;
 
     /// <summary>
     /// Indicates whether the sheep is alive.
@@ -45,7 +52,7 @@ public class SheepHealth : MonoBehaviour
     private void Awake()
     {
         SetBaseValues();
-    }  
+    }
 
     /// <summary>
     /// Loads initial health configuration from the SheepSettings ScriptableObject.
@@ -53,37 +60,68 @@ public class SheepHealth : MonoBehaviour
     /// </summary>
     private void SetBaseValues()
     {
+        if(settings=null)
+        {
+            Debug.LogError($"{name}: No SheepSettings assigned.");
+            return;
+        }
         _maxHealth = settings.MaxHealth;
-        _currentHealth = _maxHealth;      
+        _currentHealth = _maxHealth;
     }
 
     /// <summary>
-    /// Applies damage to the sheep and clamps the current health value to a minimum of zero.
+    /// Applies damage to the sheep if it is alive and the damage amount is valid.
+    /// Clamps the current health value to zero and triggers death when health is depleted.
     /// </summary>
     /// <param name="damage">The amount of damage to apply.</param>
     public void TakeDamage(int damage)
     {
-        _currentHealth-=damage;
+        if (!IsAlive)
+            return;
+        if (damage <= 0)
+            return;
+        _currentHealth -= damage;
 
-        if(_currentHealth<=0)
+        if (_currentHealth <= 0)
         {
-            _currentHealth = 0;            
+            _currentHealth = 0;
+            Die();
         }
     }
 
     /// <summary>
-    /// Restores health to the sheep if it is alive and clamps the value to the maximum health.
+    /// Restores health to the sheep if it is alive and the healing amount is valid.
+    /// Clamps the current health value to the maximum health value.
     /// </summary>
     /// <param name="heal">The amount of health to restore.</param>
     public void Heal(int heal)
     {
-        if (!IsAlive) return;
+        if (!IsAlive)
+            return;
+        if (heal <= 0)
+            return;
 
         _currentHealth += heal;
 
-        if (_currentHealth>_maxHealth)
+        if (_currentHealth > _maxHealth)
         {
             _currentHealth = _maxHealth;
         }
+    }
+
+    /// <summary>
+    /// Restores the sheep's current health value to its maximum health value.
+    /// </summary>
+    public void RestoreFullHealth()
+    {
+        _currentHealth = _maxHealth;
+    }
+
+    /// <summary>
+    /// Invokes the death event to notify subscribed systems that this sheep has died.
+    /// </summary>
+    private void Die()
+    {
+        OnDied?.Invoke();
     }
 }

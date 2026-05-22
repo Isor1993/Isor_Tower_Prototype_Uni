@@ -452,6 +452,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &283654743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -834,6 +837,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &343824505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1335,6 +1341,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &473876842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1675,6 +1684,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 0}
   IsHerdMoving: 0
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &476826828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2083,6 +2095,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &635108609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4582,6 +4597,13 @@ MonoBehaviour:
   - {x: -1, y: 0, z: 6}
   - {x: 1, y: 0, z: 8}
   - {x: -1, y: 0, z: 8}
+  _regroupRadius: 4
+  _patrolRadius: 20
+  _spawnRadius: 16
+  _showGizmo: 0
+  _patrolRadiusColor: {r: 0, g: 1, b: 0.95253116, a: 0}
+  _regroupRadiusColor: {r: 0, g: 0.22587335, b: 1, a: 0}
+  _spawnRadiusColor: {r: 0.9151, g: 0.9622642, b: 0.2901961, a: 0}
 --- !u!4 &1519260171
 Transform:
   m_ObjectHideFlags: 0
@@ -4778,6 +4800,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &1585780015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5298,6 +5323,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &1654918058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5672,6 +5700,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 0
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &1852957462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6013,6 +6044,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1867105089}
   IsHerdMoving: 0
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &1867105084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6135,6 +6169,13 @@ MonoBehaviour:
   _commander: {fileID: 1867105083}
   _herdPool: []
   _slotOffsets: []
+  _regroupRadius: 0
+  _patrolRadius: 0
+  _spawnRadius: 0
+  _showGizmo: 0
+  _patrolRadiusColor: {r: 0, g: 0, b: 0, a: 0}
+  _regroupRadiusColor: {r: 0, g: 0, b: 0, a: 0}
+  _spawnRadiusColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1903277943
 GameObject:
   m_ObjectHideFlags: 0
@@ -6440,6 +6481,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &1957776048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6814,6 +6858,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 1519260170}
   IsHerdMoving: 1
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &2042172824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7154,6 +7201,9 @@ MonoBehaviour:
   _stateSettings: {fileID: 11400000, guid: 7a6b06abe46919a4d96d49751d30d64d, type: 2}
   _herdManager: {fileID: 0}
   IsHerdMoving: 0
+  _graveyardPosition: {x: 0, y: 0, z: 0}
+  _spawnPosition: {x: 0, y: 0, z: 0}
+  _spawnTime: 0
 --- !u!114 &2088295864
 MonoBehaviour:
   m_ObjectHideFlags: 0

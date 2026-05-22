@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -27,20 +28,21 @@ public class SheepHunger : MonoBehaviour
     private int _currentHunger;
     private float _hungerTickInterval;
     private int _hungerTick;
-    private int _hungerTreshold;   
+    private int _eatTick;
+    private int _hungerThreshold;   
     private float _hungerTimer;
-
+    public event Action<int> OnStarving;
     /// <summary>
     /// Indicates whether the sheep is currently hungry.
     /// Returns true when the current hunger value is below the defined hunger threshold.
     /// </summary>
-    public bool IsHungry => _currentHunger < _hungerTreshold;
+    public bool IsHungry => _currentHunger < _hungerThreshold;
 
     /// <summary>
     /// Indicates whether the sheep currently has enough hunger value to be considered full.
     /// Returns true when the current hunger value is greater than or equal to the hunger threshold.
     /// </summary>
-    public bool IsFull => _currentHunger >= _hungerTreshold;
+    public bool IsFull => _currentHunger >= _hungerThreshold;
 
     private void Awake()
     {
@@ -51,9 +53,8 @@ public class SheepHunger : MonoBehaviour
     /// Increases the current hunger value when the sheep eats.
     /// </summary>
     public void Eat()
-    {
-        //TODOO noch essenslogik machen per zeit
-        _currentHunger += 20;
+    {      
+        _currentHunger += Mathf.Clamp(_eatTick, 0, _maxHunger);
     }
 
     /// <summary>
@@ -66,7 +67,7 @@ public class SheepHunger : MonoBehaviour
         _currentHunger = _maxHunger;
         _hungerTickInterval = settings.HungerTickInterval;
         _hungerTick = settings.HungerTick;
-        _hungerTreshold = settings.HungerThreshold;
+        _hungerThreshold = settings.HungerThreshold;
     }
 
     private void Update()
@@ -88,7 +89,10 @@ public class SheepHunger : MonoBehaviour
         _currentHunger -= _hungerTick;
         if (_currentHunger < 0)
         {
+            
             _currentHunger = 0;
         }
+       
     } 
+    
 }

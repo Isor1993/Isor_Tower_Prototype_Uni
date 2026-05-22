@@ -82,12 +82,14 @@ public class Sheep : MonoBehaviour, IDayNightListener
     {
         if (_eventManager == null) return;
         _eventManager.Subscribe(this);
+        Health.OnDied += HandleDeath;
     }
 
     private void OnDisable()
     {
         if (_eventManager == null) return;
         _eventManager.Unsubscribe(this);
+        Health.OnDied -= HandleDeath;
     }
 
     private void Update()
@@ -106,7 +108,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
         }
         
 
-
+        
     }
 
     /// <summary>
