@@ -106,7 +106,7 @@ public class SheepMoveBehaviour : MonoBehaviour
     /// Moves the sheep toward the current position of a target transform.
     /// </summary>
     /// <param name="target">The transform the sheep should follow.</param>
-    public void Follow(Transform target)
+    public void FollowBehind(Transform target)
     {
         if (target == null)
             return;

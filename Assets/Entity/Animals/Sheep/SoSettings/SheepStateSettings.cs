@@ -15,9 +15,13 @@ public class SheepStateSettings : ScriptableObject
     [Header("Patrol State")]
     [Tooltip("Radius around the sheep for random patrol points.")]
     [SerializeField] private float _patrolRadius = 10f;
+    [Tooltip("Max time before leaving State. Should be bigger than PatrolTimeMin!")]
+    [SerializeField] private float _patrolTimeMax = 20f;
+    [Tooltip("Min time before leaving State.")]
+    [SerializeField] private float _patrolTimeMin = 10f;
+    [Tooltip("Time before new position if reached.")]
+    [SerializeField] private float _newTargetTime = 0.5f;
 
-    [Tooltip("Time before choosing a new patrol target.")]
-    [SerializeField] private float _patrolWaitTime = 3f;
 
     [Header("Follow State")]
     [Tooltip("Minimum distance before the sheep stops following.")]
@@ -44,7 +48,10 @@ public class SheepStateSettings : ScriptableObject
 
     // ===== PATROL =====
     public float PatrolRadius => _patrolRadius;
-    public float PatrolWaitTime => _patrolWaitTime;
+    public float PatrolTimeMax => _patrolTimeMax;
+    public float PatrolTimeMin  => _patrolTimeMin; 
+    public float PatrolNewTargetTime  => _newTargetTime; 
+  
 
     // ===== FOLLOW =====
     public float FollowStoppingDistance => _followStoppingDistance;

@@ -17,9 +17,17 @@ public class HerdMoving : SheepStateBase
 
     public override void Tick()
     {
+        if(!Sheep.IsTamed&&Sheep.IsCommander)
+        {
+            Sheep.FSM.ChangeState(new PatrolState(Sheep,FSM));
+        }
+        if(!Sheep.IsHerdMoving&&!Sheep.IsCommander)
+        {
+            Sheep.FSM.ChangeState(new PatrolState(Sheep, FSM));
+        }
         if (Sheep.IsCommander)
         {
-            Sheep.Move.Follow(Sheep.Sense.CurrentPlayer.transform);
+            Sheep.Move.FollowBehind(Sheep.Sense.CurrentPlayer.transform);
         }
         if (!Sheep.IsCommander)
         {
