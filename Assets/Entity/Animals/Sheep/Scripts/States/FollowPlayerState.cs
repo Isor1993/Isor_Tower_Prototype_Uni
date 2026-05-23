@@ -10,6 +10,10 @@ public class FollowPlayerState : SheepStateBase
     public override void Enter()
     {
         Debug.Log($"{GetType().Name}: Change state => {nameof(FollowPlayerState)}");
+        if(Sheep.IsCommander)
+        {
+            Sheep.HerdManager.SetAllSheepHerdMoving(true);
+        }
     }
 
     public override void Tick()
@@ -29,7 +33,7 @@ public class FollowPlayerState : SheepStateBase
     }
     public override void Exit()
     {
-        // Cleanup (optional)
+        Sheep.HerdManager.SetAllSheepHerdMoving(false);
         
     }
 }

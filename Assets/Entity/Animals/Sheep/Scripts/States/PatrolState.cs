@@ -8,7 +8,7 @@ public class PatrolState : SheepStateBase
 
     public override void Enter()
     {
-        // Start-Logik      
+        Debug.Log($"{GetType().Name}: Change state => {nameof(PatrolState)}");
     }
 
     public override void Tick()

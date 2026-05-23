@@ -74,7 +74,7 @@ public class SheepHealth : MonoBehaviour,IDamagable
             Debug.LogError($"{name}: No SheepSettings assigned.");
             return;
         }
-        _maxHealth = settings.MaxHealth;
+        _maxHealth = settings.MaxHealth;        
         _currentHealth = _maxHealth;
     }
 

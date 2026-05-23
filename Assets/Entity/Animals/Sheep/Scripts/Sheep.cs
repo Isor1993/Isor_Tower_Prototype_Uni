@@ -35,6 +35,7 @@ public enum SheepTyp
 [RequireComponent(typeof(SheepMoveBehaviour))]
 public class Sheep : MonoBehaviour, IDayNightListener
 {
+    [SerializeField] SheepTyp _typ;
     [Header("Settings")]
     [Tooltip("ScriptableObject that contains the base configuration for this sheep.")]
     [SerializeField] SheepSettings _settings;
@@ -65,7 +66,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// <summary>
     /// Indicates whether this sheep is currently alive.
     /// </summary>
-    public bool IsAlive => Health.IsAlive;
+    public bool IsAlive => Health != null && Health.IsAlive;
 
     /// <summary>
     /// Gets the herd manager assigned to this sheep.
@@ -105,8 +106,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// <summary>
     /// Gets the type of this sheep inside the herd.
     /// </summary>
-    public SheepTyp Typ { get; private set; }
-
+    public SheepTyp Typ => _typ;
     /// <summary>
     /// Gets the state settings assigned to this sheep.
     /// </summary>
@@ -115,7 +115,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// <summary>
     /// Indicates whether this sheep is the commander of its herd.
     /// </summary>
-    public bool IsCommander => Typ == SheepTyp.Commander;
+    public bool IsCommander => _typ == SheepTyp.Commander;
 
     /// <summary>
     /// Indicates whether this sheep is currently asleep.
@@ -137,7 +137,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Move = GetComponent<SheepMoveBehaviour>();
         _agent = GetComponent<NavMeshAgent>();
         FSM = new SheepFSM();
-        Typ = Settings.Typ;
+        _typ = Settings.Typ;
 
     }
 

@@ -37,6 +37,9 @@ public class SheepMoveBehaviour : MonoBehaviour
     [SerializeField] private float _fleeDistanceSideOffset = 10f;
     [Tooltip("Maximum number of random flee target candidates tested before giving up."), Range(1, 1000)]
     [SerializeField] private int _maxSearchTries = 100;
+    [Header("Follow Settings")]
+    [Tooltip("."), Range(-1f, -4f)]
+    [SerializeField] private float _followDistance = -2f;
 
     [Header("Movement Settings")]
     [Tooltip("Movement speed used for normal walking behavior."), Range(1, 1000)]
@@ -107,7 +110,11 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         if (target == null)
             return;
-        MoveTo(target.position);
+        Vector3 localOffset = new Vector3(0, 0, _followDistance);
+        Vector3 worldOffset = target.rotation * localOffset;
+        Vector3 followPosition = target.position + worldOffset;
+
+        MoveTo(followPosition);
     }
 
     /// <summary>
@@ -120,8 +127,8 @@ public class SheepMoveBehaviour : MonoBehaviour
             return true;
         if (_agent.pathPending)
             return false;
-        if (_agent.remainingDistance > _agent.stoppingDistance)
-            return false;
+       if (_agent.remainingDistance > _agent.stoppingDistance)
+          return false;
 
         return !_agent.hasPath || _agent.velocity.sqrMagnitude <= 0.01f;
     }

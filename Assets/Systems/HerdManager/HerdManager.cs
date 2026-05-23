@@ -13,8 +13,10 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using System.Collections.Generic;
 using UnityEngine;
+
 
 /// <summary>
 /// Manages herd-level data and positioning logic for a group of sheep.
@@ -27,13 +29,13 @@ public class HerdManager : MonoBehaviour
     [Tooltip("All sheep that belong to this herd.")]
     [SerializeField] private List<Sheep> _herdPool = new List<Sheep>();
 
-    [Tooltip("Formation offsets used to position normal sheep around the herd anchor."), Range(1f, 10f)]
+    [Tooltip("Formation offsets used to position normal sheep around the herd anchor.")]
     [SerializeField] private Vector3[] _slotOffsets;
     [Tooltip("Radius around the herd anchor used for random regroup positions."), Range(1f, 100f)]
     [SerializeField] private float _regroupRadius;
     [Tooltip("Radius around the herd anchor used for random patrol positions."), Range(1f, 100f)]
     [SerializeField] private float _patrolRadius;
-    [Tooltip("Radius around the herd anchor used for random spawn or respawn positions."),Range(1f,100f)]
+    [Tooltip("Radius around the herd anchor used for random spawn or respawn positions."), Range(1f, 100f)]
     [SerializeField] private float _spawnRadius;
 
     [Header("Gizmo Settings")]
@@ -60,9 +62,12 @@ public class HerdManager : MonoBehaviour
 
     private Vector3 _lastHerdAnchorPosition;
 
-    private void Awake()
+    
+
+    private void Start()
     {
         ValidateHerd();
+
 
     }
 
@@ -97,7 +102,7 @@ public class HerdManager : MonoBehaviour
 
         if (!IsHerdMember(sheep))
             return anchor;
-        
+
         if (sheep == _commander)
             return anchor;
 
@@ -125,10 +130,17 @@ public class HerdManager : MonoBehaviour
             Debug.LogError($"{name}: Slot index is outside of the slot offset array.");
             return anchor;
         }
+        Vector3 offset = _slotOffsets[slotIndex];
+        if (_commander != null)
+        {
+            offset = _commander.transform.rotation * offset;
+        }
 
-        Vector3 targetPosition = anchor + _slotOffsets[slotIndex];
+        Vector3 targetPosition = anchor + offset;
         return targetPosition;
     }
+
+
 
     /// <summary>
     /// Gets a random regroup position around the current herd anchor.
@@ -324,6 +336,22 @@ public class HerdManager : MonoBehaviour
     private bool IsHerdMember(Sheep sheep)
     {
         return sheep != null && _herdPool.Contains(sheep);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="isHerdmoving"></param>
+    public void SetAllSheepHerdMoving(bool isHerdmoving)
+    {
+        foreach(Sheep sheep in _herdPool)
+        {
+            if(sheep == null)
+                continue;
+            if (sheep.IsCommander)
+                continue;
+            sheep.IsHerdMoving = isHerdmoving;
+        }
     }
 
 #if(UNITY_EDITOR)    

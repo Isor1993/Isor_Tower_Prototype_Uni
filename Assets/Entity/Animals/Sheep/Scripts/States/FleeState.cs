@@ -41,6 +41,8 @@ public class FleeState : SheepStateBase
 
         if (_updateTimer.IsFinished(Settings.UpdateTickNewPosition))
         {
+            if (Sheep.IsCommander)
+                return;
             _updateTimer.Reset();
             Sheep.Move.FleeFrom(_threat.position);
             return;
