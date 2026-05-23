@@ -143,7 +143,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     private void Start()
     {
-        FSM.ChangeState(new RegroupState(this, FSM)); //TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTTT
+        FSM.ChangeState(new IdleState(this, FSM)); 
     }
 
     private void OnEnable()

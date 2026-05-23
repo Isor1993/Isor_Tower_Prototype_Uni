@@ -19,12 +19,12 @@ public class SheepSettings : ScriptableObject
 
     [Header("Move Behaviour")]
     [Header("Movement Settings")]
-    [SerializeField] private float _walkSpeed = 2f;
+    [SerializeField] private float _walkSpeed = 1f;
     [SerializeField] private float _walkAcceleration = 4f;
     [SerializeField] private float _walkAngularSpeed = 120f;
 
     [Header("Flee Movement Settings")]
-    [SerializeField] private float _fleeSpeed = 6f;
+    [SerializeField] private float _fleeSpeed = 4f;
     [SerializeField] private float _fleeAcceleration = 14f;
     [SerializeField] private float _fleeAngularSpeed = 360f;
     [SerializeField] private float _minFleeDistance = 8f;
