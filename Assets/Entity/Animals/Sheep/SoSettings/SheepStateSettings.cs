@@ -12,9 +12,7 @@ public class SheepStateSettings : ScriptableObject
     [SerializeField] private float _alertTime = 1.5f;
     [SerializeField] private float _reactionTime = 2f;
 
-    [Header("Patrol State")]
-    [Tooltip("Radius around the sheep for random patrol points.")]
-    [SerializeField] private float _patrolRadius = 10f;
+    [Header("Patrol State")]   
     [Tooltip("Max time before leaving State. Should be bigger than PatrolTimeMin!")]
     [SerializeField] private float _patrolTimeMax = 20f;
     [Tooltip("Min time before leaving State.")]
@@ -22,22 +20,17 @@ public class SheepStateSettings : ScriptableObject
     [Tooltip("Time before new position if reached.")]
     [SerializeField] private float _newTargetTime = 0.5f;
 
-
-    [Header("Follow State")]
-    [Tooltip("Minimum distance before the sheep stops following.")]
-    [SerializeField] private float _followStoppingDistance = 2f;
+    [Header("Sleep State")]
+    [Tooltip(""),Range(1f,60f)]
+    [SerializeField] private float _spawnTime = 10f;
+      
 
     [Header("Flee State")]
     [Tooltip("")]
     [SerializeField] private float _updateTickNewPosition = 15f;
+      
 
-    [Header("Regroup State")]
-    [Tooltip("Distance required before regroup is considered complete.")]
-    [SerializeField] private float _regroupDistance = 3f;
-
-    [Header("Eating State")]
-    [Tooltip("How long the sheep eats before checking again.")]
-    [SerializeField] private float _eatDuration = 4f;
+   
 
     // ===== IDLE =====
     public float IdleTime => _idleTime;
@@ -46,24 +39,24 @@ public class SheepStateSettings : ScriptableObject
     public float AlertTime => _alertTime;
     public float ReactionTime => _reactionTime;
 
-    // ===== PATROL =====
-    public float PatrolRadius => _patrolRadius;
+    // ===== PATROL =====    
     public float PatrolTimeMax => _patrolTimeMax;
     public float PatrolTimeMin  => _patrolTimeMin; 
     public float PatrolNewTargetTime  => _newTargetTime; 
   
 
     // ===== FOLLOW =====
-    public float FollowStoppingDistance => _followStoppingDistance;
+   
 
     // ===== FLEE =====
     public float UpdateTickNewPosition => _updateTickNewPosition;
 
 
     // ===== REGROUP =====
-    public float RegroupDistance => _regroupDistance;
+   
 
     // ===== EATING =====
-    public float EatDuration => _eatDuration;
-
+   
+    // ===== SLEEP =====
+    public float SpawnTime  => _spawnTime;
 }

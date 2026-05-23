@@ -57,11 +57,9 @@ public class OnAlertState : SheepStateBase
         FSM.ChangeState(new PatrolState(Sheep, FSM));
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
+   
     public override void Exit()
     {
-        // Cleanup (optional)        
+          
     }
 }

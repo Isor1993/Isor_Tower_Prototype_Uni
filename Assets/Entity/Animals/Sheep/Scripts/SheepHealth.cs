@@ -62,6 +62,10 @@ public class SheepHealth : MonoBehaviour,IDamagable
     {
         SetBaseValues();
     }
+    private void OnEnable()
+    {
+       RestoreFullHealth();
+    }
 
     /// <summary>
     /// Loads the initial health configuration from the SheepSettings ScriptableObject.

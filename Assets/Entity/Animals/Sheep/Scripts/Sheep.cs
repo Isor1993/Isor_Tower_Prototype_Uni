@@ -221,14 +221,13 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// Handles sheep spawning by re-enabling behavior components,
     /// switching to the idle state, and moving the sheep to the spawn position.
     /// </summary>
-    private void HandleSpawn()
+    public void HandleSpawn()
     {
         _agent.enabled = true;
         Move.enabled = true;
         Sense.enabled = true;
-        Hunger.enabled = true;
-        FSM.ChangeState(new IdleState(this, FSM));
-        transform.position = _spawnPosition;
+        Hunger.enabled = true;        
+        transform.position = _spawnPosition;        
     }
 
     /// <summary>

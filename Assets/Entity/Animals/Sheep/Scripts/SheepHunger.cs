@@ -16,6 +16,7 @@
 using System;
 using UnityEngine;
 
+
 /// <summary>
 /// Controls the hunger values of a sheep and notifies other systems when the sheep starts starving.
 /// </summary>
@@ -38,8 +39,9 @@ public class SheepHunger : MonoBehaviour
     [SerializeField] private int _hungerThreshold;
     [Tooltip("Damage amount applied when the sheep is starving."), Range(1, 100)]
     [SerializeField] private int _starvationDamage;
-
+ 
     private float _hungerTimer;
+    private bool _isEating = false;
 
     /// <summary>
     /// Raised when the sheep reaches starvation and should receive starvation damage.
@@ -69,20 +71,15 @@ public class SheepHunger : MonoBehaviour
     /// </summary>
     public int StarvationDamage => _starvationDamage;
 
+    public bool IsEating { get => _isEating; set => _isEating = value; }
+
     private void Awake()
     {
         SetBaseValue();
     }
-
-    /// <summary>
-    /// Reduces the sheep's current hunger value by the configured eat tick amount.
-    /// The resulting hunger value is clamped between zero and the maximum hunger value.
-    /// </summary>
-    public void Eat()
+    private void OnEnable()
     {
-        _eatTick = Mathf.Max(_eatTick, 0);
-        _currentHunger -= _eatTick;
-        _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
+        RestoreHunger();
     }
 
     /// <summary>
@@ -112,12 +109,23 @@ public class SheepHunger : MonoBehaviour
         if (_hungerTimer >= _hungerTickInterval)
         {
             _hungerTimer = 0;
+            if(IsEating)
+            {
+                Eat();
+                return;
+            }
             ApplyHungerTick();
             if (IsStarving)
             {
                 OnStarving?.Invoke(DamageType.Starvation);
             }
         }
+    }
+
+    private void Eat()
+    {
+        _currentHunger -= _eatTick;
+        _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
     }
 
     /// <summary>
@@ -128,6 +136,11 @@ public class SheepHunger : MonoBehaviour
     {
         _currentHunger += _hungerTick;
         _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
+    }
+
+    private void RestoreHunger()
+    {
+        _currentHunger = 0;
     }
 
 }

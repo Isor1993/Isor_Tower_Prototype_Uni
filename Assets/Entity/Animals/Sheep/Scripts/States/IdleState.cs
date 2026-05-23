@@ -25,7 +25,7 @@ public class IdleState : SheepStateBase
 
     public IdleState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
     {
-        
+
     }
 
     /// <summary>
@@ -54,15 +54,15 @@ public class IdleState : SheepStateBase
         if (Sheep.Hunger.IsHungry)
         {
 
-            //Debug.Log("ISHungry");
-            //FSM.ChangeState(new EatingState(Sheep, FSM));
-            //return;
-        }    
+            Debug.Log("ISHungry");
+            FSM.ChangeState(new EatingState(Sheep, FSM));
+            return;
+        }
         if (_timer.IsFinished(Settings.IdleTime))
         {
-            //Debug.Log("ISFinished");
-            //FSM.ChangeState(new RegroupState(Sheep, FSM));
-            //return;
+            Debug.Log("ISFinished");
+            FSM.ChangeState(new RegroupState(Sheep, FSM));
+            return;
         }
     }
 
@@ -71,6 +71,6 @@ public class IdleState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-        // Cleanup (optional)       
+           
     }
 }
