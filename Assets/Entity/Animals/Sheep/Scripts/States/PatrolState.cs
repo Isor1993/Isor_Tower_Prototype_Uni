@@ -1,5 +1,23 @@
+/*****************************************************************************
+* Project : Isors Tower Prototype
+* File    : PatrolState.cs
+* Date    : 20.02.2026
+* Author  : Eric Rosenberg
+*
+* Description :
+* Represents the patrol behavior state of a sheep.
+* Moves the sheep between random valid patrol positions around the herd anchor
+* for a limited patrol duration. The state reacts to threats, sleep state,
+* and hunger by transitioning into alert, sleeping, or eating behavior.
+*
+* History :
+* 20.02.2026 ER Created
+******************************************************************************/
 using UnityEngine;
 
+/// <summary>
+/// State in which the sheep patrols around the herd area and periodically receives new patrol targets.
+/// </summary>
 public class PatrolState : SheepStateBase
 {
     private readonly Timer _patrolTimer = new Timer();
@@ -13,6 +31,10 @@ public class PatrolState : SheepStateBase
     {
     }
 
+    /// <summary>
+    /// Enters the patrol state, randomizes the patrol duration,
+    /// resets the patrol timers, and assigns the first patrol target.
+    /// </summary>
     public override void Enter()
     {
         Debug.Log($"{GetType().Name}: Change state => {nameof(PatrolState)}");
@@ -26,6 +48,13 @@ public class PatrolState : SheepStateBase
         SetNewPatrolTarget();
     }
 
+    /// <summary>
+    /// Updates the patrol behavior.
+    /// The sheep switches to alert when a threat is detected, to sleeping when it is asleep,
+    /// to eating when it is hungry, or to idle when the patrol duration is finished.
+    /// It also assigns a new patrol target after the configured target update interval
+    /// once the current destination has been reached.
+    /// </summary>
     public override void Tick()
     {
         _newTargetTimer.Tick(Time.deltaTime);
@@ -34,6 +63,11 @@ public class PatrolState : SheepStateBase
         if (Sheep.Sense.HasThreat)
         {
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            return;
+        }
+        if(Sheep.Sense.IsPlayerInTameRange&&Sheep.IsTamed)
+        {
+            FSM.ChangeState(new FollowPlayerState(Sheep, FSM));
             return;
         }
 
@@ -57,16 +91,27 @@ public class PatrolState : SheepStateBase
 
         if (_newTargetTimer.IsFinished(_newTargetTime))
         {
-            _newTargetTimer.Reset();
-            SetNewPatrolTarget();
+            if (Sheep.Move.HasReachedDestination())
+            {
+                _newTargetTimer.Reset();
+                SetNewPatrolTarget();
+            }
         }
     }
 
+    /// <summary>
+    /// Exits the patrol state.
+    /// </summary>
     public override void Exit()
     {
 
     }
 
+
+    /// <summary>
+    /// Requests a random patrol position from the herd manager, validates it on the NavMesh,
+    /// and moves the sheep toward the resulting valid target position.
+    /// </summary>
     private void SetNewPatrolTarget()
     {
         _newPos = Sheep.HerdManager.GetRandomPatrolPosition();

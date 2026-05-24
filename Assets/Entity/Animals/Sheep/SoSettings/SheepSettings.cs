@@ -20,12 +20,12 @@ public class SheepSettings : ScriptableObject
     [Header("Move Behaviour")]
     [Header("Movement Settings")]
     [SerializeField] private float _walkSpeed = 1f;
-    [SerializeField] private float _walkAcceleration = 4f;
+    [SerializeField] private float _walkAcceleration = 2f;
     [SerializeField] private float _walkAngularSpeed = 120f;
 
     [Header("Flee Movement Settings")]
-    [SerializeField] private float _fleeSpeed = 4f;
-    [SerializeField] private float _fleeAcceleration = 14f;
+    [SerializeField] private float _fleeSpeed = 3f;
+    [SerializeField] private float _fleeAcceleration = 6f;
     [SerializeField] private float _fleeAngularSpeed = 360f;
     [SerializeField] private float _minFleeDistance = 8f;
     [SerializeField] private float _maxFleeDistance = 10f;
@@ -36,7 +36,9 @@ public class SheepSettings : ScriptableObject
     [SerializeField] private float _sheepRadius = 8f;
     [SerializeField] private float _playerRadius = 12f;
     [SerializeField] private float _commanderRadius = 15f;
-    [SerializeField] private float _fearRadiusforPlayer = 1f;
+    [SerializeField] private float _fearRadiusforPlayer = 2f;
+    [SerializeField] private float _distanceForTaming = 4f;
+   
 
     [Header("Sense Layers")]
     [SerializeField] private LayerMask _threatLayer;
@@ -84,6 +86,8 @@ public class SheepSettings : ScriptableObject
     public float PlayerRadius => _playerRadius;
     public float CommanderRadius => _commanderRadius;
     public float FearRadiusforPlayer => _fearRadiusforPlayer;
+    public float DistanceForTaming => _distanceForTaming;
+
 
     // ===== SENSE LAYERS =====
     public LayerMask ThreatLayer => _threatLayer;
@@ -96,5 +100,4 @@ public class SheepSettings : ScriptableObject
     public Color ColorPlayer => _colorPlayer;
     public Color ColorCommander => _colorCommander;
 
-    
 }

@@ -9,8 +9,8 @@ public class SheepStateSettings : ScriptableObject
 
     [Header("Alert State")]
     [Tooltip("How long the sheep stays alert before reacting.")]
-    [SerializeField] private float _alertTime = 1.5f;
-    [SerializeField] private float _reactionTime = 2f;
+    [SerializeField] private float _alertTime = 22f;
+    [SerializeField] private float _reactionTime = 1.5f;
 
     [Header("Patrol State")]   
     [Tooltip("Max time before leaving State. Should be bigger than PatrolTimeMin!")]
@@ -27,7 +27,7 @@ public class SheepStateSettings : ScriptableObject
 
     [Header("Flee State")]
     [Tooltip("")]
-    [SerializeField] private float _updateTickNewPosition = 15f;
+    [SerializeField] private float _updateTickNewPosition = 0.5f;
       
 
    

@@ -36,8 +36,12 @@ public class SheepSense : MonoBehaviour
     [Header("Permament on Gizmos")]
     [Tooltip("Always draws detection range wire spheres in the Scene view.")]
     [SerializeField] private bool _showClosestDetectionLinePermanent = false;
-    [Tooltip("")]
+    [Tooltip("Always draws detection range wire spheres in the Scene view.")]
     [SerializeField] private bool _showDetectionRangeWiresPermanent = false;
+    [Tooltip("Distance at which the player is considered too close and may scare the sheep.")]
+    [SerializeField] private float _fearDistanceForPlayer;
+    [Tooltip("Distance at which the player is close enough to tame the sheep.")]
+    [SerializeField] private float _distanceForTamingSheep;
 
     [Tooltip("Gizmo color used for threat detection visualization.")]
     [SerializeField] private Color _colorThreat;
@@ -66,7 +70,8 @@ public class SheepSense : MonoBehaviour
     [Tooltip("Local layer mask used to detect the player. Used only when local overrides are enabled.")]
     [SerializeField] private LayerMask _playerLayer;
 
-    private bool _isPlayerTooClose = false;
+    private bool _isPlayerTooClose;
+    private bool _isPlayerInTameRange;
 
     /// <summary>
     /// Gets the active threat detection radius, either from local overrides or from SheepSettings.
@@ -164,9 +169,14 @@ public class SheepSense : MonoBehaviour
     public Collider[] CommanderHits { get; private set; }
 
     /// <summary>
-    /// 
+    /// Detects if player is too close.
     /// </summary>
     public bool IsPlayerTooClose => _isPlayerTooClose;
+
+    /// <summary>
+    /// Detects if player is in range for taming.
+    /// </summary>
+    public bool IsPlayerInTameRange => _isPlayerInTameRange;
 
     private void Awake()
     {
@@ -190,6 +200,8 @@ public class SheepSense : MonoBehaviour
         _colorSheep = settings.ColorSheep;
         _colorPlayer = settings.ColorPlayer;
         _colorCommander = settings.ColorCommander;
+        _fearDistanceForPlayer = settings.FearRadiusforPlayer;
+        _distanceForTamingSheep = settings.DistanceForTaming;
     }
 
     private void Update()
@@ -241,7 +253,9 @@ public class SheepSense : MonoBehaviour
             return;
 
         float distance = Vector3.Distance(transform.position, CurrentPlayer.position);
-        _isPlayerTooClose = distance < settings.FearRadiusforPlayer;
+        _isPlayerTooClose = distance < _fearDistanceForPlayer;
+        _isPlayerInTameRange = distance < _distanceForTamingSheep;
+
 
     }
 

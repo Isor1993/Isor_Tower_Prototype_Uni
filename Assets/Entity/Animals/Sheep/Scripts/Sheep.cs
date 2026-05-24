@@ -180,6 +180,10 @@ public class Sheep : MonoBehaviour, IDayNightListener
     private void Update()
     {
         FSM.Tick();
+        if(IsHerdMoving&&!IsAsleep&&!IsCommander&&IsAlive)
+        {
+            FSM.ChangeState(new RegroupState(this, FSM));
+        }
     }
 
     /// <summary>
