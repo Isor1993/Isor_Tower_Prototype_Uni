@@ -79,7 +79,7 @@ public class HerdManager : MonoBehaviour
     /// <returns>The current or last known herd anchor position.</returns>
     public Vector3 GetHerdAnchorPosition()
     {
-        if (IsCommanderAlive)
+        if (_commander.IsTamed&&IsCommanderAlive)
         {
             return _lastHerdAnchorPosition = _commander.transform.position;
         }

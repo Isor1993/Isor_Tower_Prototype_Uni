@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: SheepStateSettings
   m_EditorClassIdentifier: Assembly-CSharp::SheepStateSettings
   _idleTime: 5
-  _alertTime: 1.5
-  _patrolRadius: 10
-  _patrolWaitTime: 3
-  _followStoppingDistance: 2
-  _fleeDistance: 15
-  _fleeDuration: 5
-  _regroupDistance: 3
-  _eatDuration: 4
+  _alertTime: 4
+  _reactionTime: 1
+  _patrolTimeMax: 20
+  _patrolTimeMin: 10
+  _newTargetTime: 0.5
+  _spawnTime: 10
+  _updateTickNewPosition: 0.5

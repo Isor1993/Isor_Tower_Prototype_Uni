@@ -110,11 +110,12 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         if (target == null)
             return;
-        Vector3 localOffset = new Vector3(0, 0, _followDistance);
+        Vector3 localOffset = new Vector3(0f,0f,0f);
         Vector3 worldOffset = target.rotation * localOffset;
         Vector3 followPosition = target.position + worldOffset;
 
         MoveTo(followPosition);
+        
     }
 
     /// <summary>

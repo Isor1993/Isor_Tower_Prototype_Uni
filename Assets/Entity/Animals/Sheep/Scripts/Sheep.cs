@@ -48,11 +48,11 @@ public class Sheep : MonoBehaviour, IDayNightListener
     [Tooltip("Herd manager that controls herd-level behavior and positioning for this sheep.")]
     [SerializeField] private HerdManager _herdManager;
     [Tooltip("World position where the sheep is moved after dying.")]
-    [SerializeField] private Vector3 _graveyardPosition;
-    [Tooltip("World position where the sheep is placed when it respawns.")]
-    [SerializeField] private Vector3 _spawnPosition;
+    [SerializeField] private Transform _graveyardPosition;
     [Tooltip("Time in seconds before the sheep should respawn after death."), Range(1, 1000)]
     [SerializeField] private float _spawnTime;
+
+    private MeshRenderer _mesh;
 
 
     /// <summary>
@@ -126,7 +126,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// Indicates whether this sheep is currently tamed by the player.
     /// </summary>
     public bool IsTamed => _isTamed;
-   
+
 
     private void Awake()
     {
@@ -136,6 +136,8 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Sense = GetComponent<SheepSense>();
         Move = GetComponent<SheepMoveBehaviour>();
         _agent = GetComponent<NavMeshAgent>();
+        _mesh = GetComponent<MeshRenderer>();
+
         FSM = new SheepFSM();
         _typ = Settings.Typ;
 
@@ -143,7 +145,8 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     private void Start()
     {
-        FSM.ChangeState(new IdleState(this, FSM)); 
+        FSM.ChangeState(new IdleState(this, FSM));
+        
     }
 
     private void OnEnable()
@@ -180,10 +183,11 @@ public class Sheep : MonoBehaviour, IDayNightListener
     private void Update()
     {
         FSM.Tick();
-        if(IsHerdMoving&&!IsAsleep&&!IsCommander&&IsAlive)
+        if (IsHerdMoving && !IsAsleep && !IsCommander && IsAlive)
         {
             FSM.ChangeState(new RegroupState(this, FSM));
         }
+      
     }
 
     /// <summary>
@@ -212,12 +216,15 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// </summary>
     private void HandleDeath()
     {
+        _isTamed = false;
         _agent.enabled = false;
         Move.enabled = false;
         Sense.enabled = false;
         Hunger.enabled = false;
+       
         FSM.ChangeState(new DeadState(this, FSM));
-        transform.position = _graveyardPosition;
+        transform.position = _graveyardPosition.position;
+        _mesh.enabled = true;
 
     }
 
@@ -227,12 +234,42 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// </summary>
     public void HandleSpawn()
     {
+        _mesh.enabled = false;
+
+        transform.position = HerdManager.GetHerdAnchorPosition();
+        Debug.Log( transform.position);
         _agent.enabled = true;
         Move.enabled = true;
+
+        if(!TryGetSpawnposition())
+        {
+            FSM.ChangeState(new DeadState(this,FSM));
+        }
+
         Sense.enabled = true;
-        Hunger.enabled = true;        
-        transform.position = _spawnPosition;        
+        Hunger.enabled = true;
+        _mesh.enabled = true;
+        Health.RestoreFullHealth();
+
+        FSM.ChangeState(new IdleState(this, FSM));
+
     }
+
+    private bool TryGetSpawnposition()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            Vector3 newSpawnPos = HerdManager.GetRandomSpawnPosition();
+            if (Move.TryGetValidTargetPosition(newSpawnPos, out Vector3 validPos))
+            {
+                _agent.Warp(validPos);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     /// <summary>
     /// Applies starvation damage to the sheep when the hunger system raises a starvation event.

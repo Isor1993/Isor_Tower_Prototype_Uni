@@ -31,6 +31,10 @@ public class SheepHealth : MonoBehaviour,IDamagable
     [Tooltip("Current health value of this sheep.")]
     [SerializeField] private int _currentHealth;
 
+    [Tooltip("Funktion like a button ti kill sheep.")]
+    [SerializeField] private bool _killSheep=false;
+    
+
     /// <summary>
     /// Raised once when the sheep's health reaches zero.
     /// </summary>
@@ -62,9 +66,16 @@ public class SheepHealth : MonoBehaviour,IDamagable
     {
         SetBaseValues();
     }
-    private void OnEnable()
+
+    private void Update()
     {
-       RestoreFullHealth();
+       if(_killSheep)
+        {
+            _killSheep = false;
+            _currentHealth = 0;
+            Die();           
+        }
+
     }
 
     /// <summary>
@@ -140,6 +151,7 @@ public class SheepHealth : MonoBehaviour,IDamagable
     /// </summary>
     private void Die()
     {
+        
         OnDied?.Invoke();
     }    
 }
