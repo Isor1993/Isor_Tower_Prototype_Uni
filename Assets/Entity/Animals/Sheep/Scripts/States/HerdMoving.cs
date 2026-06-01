@@ -31,7 +31,7 @@ public class HerdMoving : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(HerdMoving)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(HerdMoving)}");
     }
 
     /// <summary>

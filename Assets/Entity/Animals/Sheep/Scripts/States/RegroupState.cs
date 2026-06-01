@@ -36,7 +36,7 @@ public class RegroupState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(RegroupState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(RegroupState)}");
 
         _hasValidTarget = false;
 
@@ -83,6 +83,16 @@ public class RegroupState : SheepStateBase
     /// </summary>
     public override void Tick()
     {
+        if (Sheep.Sense.HasThreat)
+        {
+            FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            return;
+        }
+        if (Sheep.Sense.HasPlayerInRange)
+        {
+            FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            return;
+        }
         if (!_hasValidTarget)
         {
             FSM.ChangeState(new PatrolState(Sheep, FSM));
@@ -104,7 +114,7 @@ public class RegroupState : SheepStateBase
         {
             FSM.ChangeState(new PatrolState(Sheep, FSM));
             return;
-        }
+        }       
     }
 
     /// <summary>

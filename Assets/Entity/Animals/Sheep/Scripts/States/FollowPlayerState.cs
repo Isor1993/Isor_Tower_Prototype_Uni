@@ -31,7 +31,7 @@ public class FollowPlayerState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(FollowPlayerState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FollowPlayerState)}");
         if (Sheep.IsCommander)
         {
             Sheep.HerdManager.SetAllSheepHerdMoving(true);

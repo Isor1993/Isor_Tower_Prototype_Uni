@@ -57,9 +57,122 @@ public class SheepMoveBehaviour : MonoBehaviour
     [Tooltip("Angular speed used while fleeing from a threat."), Range(1, 1000)]
     [SerializeField] private float _fleeAngularSpeed = 360f;
 
+    private Sheep _sheep;
     private NavMeshAgent _agent;
     NavMeshPath _fleePath;
     NavMeshPath _validPath;
+
+
+
+
+
+
+    [SerializeField] private float _blockCheckRadius = 0.8f;
+    [SerializeField] private float _blockCheckDistance = 1.2f;
+    [SerializeField] private LayerMask _sheepLayer;
+
+    public bool ShouldWaitForAgentAhead()
+    {
+        if (_agent == null)
+        {
+            //Debug.Log($"{name}: Agent is null");
+            return false;
+        }
+
+        if (!_agent.enabled)
+        {
+            //Debug.Log($"{name}: Agent disabled");
+            return false;
+        }
+
+        if (!_agent.isOnNavMesh)
+        {
+            //Debug.Log($"{name}: Agent not on NavMesh");
+            return false;
+        }
+
+        if (_agent.pathPending)
+        {
+            //Debug.Log($"{name}: Path pending");
+            return false;
+        }
+
+        if (!_agent.hasPath)
+        {
+            //Debug.Log($"{name}: Has no path");
+            return false;
+        }
+
+        Vector3 moveDirection = _agent.desiredVelocity;
+        moveDirection.y = 0f;
+
+        if (moveDirection.sqrMagnitude <= 0.01f)
+        {
+            //Debug.Log($"{name}: Desired velocity too small");
+            return false;
+        }
+
+        moveDirection.Normalize();
+
+        Vector3 checkCenter = transform.position + moveDirection * _blockCheckDistance;
+
+        Collider[] hits = Physics.OverlapSphere(
+            checkCenter,
+            _blockCheckRadius,
+            _sheepLayer
+        );
+
+       // Debug.Log($"{name}: Hits found = {hits.Length}");
+
+        foreach (Collider hit in hits)
+        {
+            Sheep otherSheep = hit.GetComponentInParent<Sheep>();
+
+            if (otherSheep == null)
+            {
+                //Debug.Log($"{name}: Hit has no Sheep parent: {hit.name}");
+                continue;
+            }
+
+            if (otherSheep == _sheep)
+            {
+                //Debug.Log($"{name}: Ignored self: {hit.name}");
+                continue;
+            }
+
+            NavMeshAgent otherAgent = hit.GetComponentInParent<NavMeshAgent>();
+
+            if (otherAgent == null)
+            {
+                //Debug.Log($"{name}: Other has no NavMeshAgent: {hit.name}");
+                continue;
+            }
+
+            bool otherHasHigherPriority =
+                otherAgent.avoidancePriority < _agent.avoidancePriority;
+
+            /*Debug.Log(
+            $"{name}: Found other sheep {otherSheep.name}, " +
+                $"my priority {_agent.avoidancePriority}, " +
+                $"other priority {otherAgent.avoidancePriority}, " +
+                $"other higher = {otherHasHigherPriority}"
+            );
+            */
+            if (otherHasHigherPriority)
+                return true;
+        }
+
+        return false;
+    }
+
+    public void WaitMoving(bool shouldWait)
+    {
+        if (_agent == null || !_agent.enabled)
+            return;
+
+        _agent.isStopped = shouldWait;
+    }
+
 
     private void Awake()
     {
@@ -67,6 +180,7 @@ public class SheepMoveBehaviour : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _fleePath = new NavMeshPath();
         _validPath = new NavMeshPath();
+        _sheep = GetComponent<Sheep>();
         SetBaseValues();
     }   
 
@@ -87,6 +201,7 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         if (_agent == null || !_agent.enabled)
             return;
+        
         _agent.isStopped = false;
         _agent.SetDestination(targetPosition);
     }
@@ -100,7 +215,8 @@ public class SheepMoveBehaviour : MonoBehaviour
             return;
         _agent.isStopped = true;
         _agent.ResetPath();
-    }
+    }   
+
 
     /// <summary>
     /// Moves the sheep toward the current position of a target transform.

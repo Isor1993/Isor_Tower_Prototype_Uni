@@ -52,7 +52,9 @@ public class Sheep : MonoBehaviour, IDayNightListener
     [Tooltip("Time in seconds before the sheep should respawn after death."), Range(1, 1000)]
     [SerializeField] private float _spawnTime;
 
-    private MeshRenderer _mesh;
+    [SerializeField] private DodgeBehaviourBase _dodge;
+
+    private SkinnedMeshRenderer _visualRoot;
 
 
     /// <summary>
@@ -99,6 +101,11 @@ public class Sheep : MonoBehaviour, IDayNightListener
     public SheepFSM FSM { get; private set; }
 
     /// <summary>
+    /// Gets the finite state machine that controls this sheep's current behavior.
+    /// </summary>
+    public DodgeBehaviourBase Dodge => _dodge;
+
+    /// <summary>
     /// Gets the base settings assigned to this sheep.
     /// </summary>
     public SheepSettings Settings => _settings;
@@ -136,7 +143,8 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Sense = GetComponent<SheepSense>();
         Move = GetComponent<SheepMoveBehaviour>();
         _agent = GetComponent<NavMeshAgent>();
-        _mesh = GetComponent<MeshRenderer>();
+        _visualRoot = GetComponentInChildren<SkinnedMeshRenderer>();
+       
 
         FSM = new SheepFSM();
         _typ = Settings.Typ;
@@ -183,11 +191,11 @@ public class Sheep : MonoBehaviour, IDayNightListener
     private void Update()
     {
         FSM.Tick();
-        if (IsHerdMoving && !IsAsleep && !IsCommander && IsAlive)
-        {
+        /*if (!FSM.IsCurentState<RegroupState>() && !FSM.IsCurentState<HerdMoving>() && IsHerdMoving && !IsAsleep && !IsCommander && IsAlive)
+        {      
             FSM.ChangeState(new RegroupState(this, FSM));
         }
-      
+      */
     }
 
     /// <summary>
@@ -224,7 +232,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
        
         FSM.ChangeState(new DeadState(this, FSM));
         transform.position = _graveyardPosition.position;
-        _mesh.enabled = true;
+        _visualRoot.enabled = true;
 
     }
 
@@ -234,7 +242,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// </summary>
     public void HandleSpawn()
     {
-        _mesh.enabled = false;
+        _visualRoot.enabled = false;
 
         transform.position = HerdManager.GetHerdAnchorPosition();
         Debug.Log( transform.position);
@@ -248,7 +256,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
         Sense.enabled = true;
         Hunger.enabled = true;
-        _mesh.enabled = true;
+        _visualRoot.enabled = true;
         Health.RestoreFullHealth();
 
         FSM.ChangeState(new IdleState(this, FSM));

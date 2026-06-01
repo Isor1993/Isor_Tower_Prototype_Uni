@@ -39,7 +39,7 @@ public class SheepSense : MonoBehaviour
     [Tooltip("Always draws detection range wire spheres in the Scene view.")]
     [SerializeField] private bool _showDetectionRangeWiresPermanent = false;
     [Tooltip("Distance at which the player is considered too close and may scare the sheep.")]
-    [SerializeField] private float _fearDistanceForPlayer;
+    [SerializeField] private float _fearDistanceForPlayer;   
     [Tooltip("Distance at which the player is close enough to tame the sheep.")]
     [SerializeField] private float _distanceForTamingSheep;
 
@@ -70,7 +70,7 @@ public class SheepSense : MonoBehaviour
     [Tooltip("Local layer mask used to detect the player. Used only when local overrides are enabled.")]
     [SerializeField] private LayerMask _playerLayer;
 
-    private bool _isPlayerTooClose;
+    private bool _isPlayerTooClose;  
     private bool _isPlayerInTameRange;
 
     /// <summary>
@@ -178,6 +178,8 @@ public class SheepSense : MonoBehaviour
     /// </summary>
     public bool IsPlayerInTameRange => _isPlayerInTameRange;
 
+  
+
     private void Awake()
     {
         SetBaseValues();
@@ -232,8 +234,7 @@ public class SheepSense : MonoBehaviour
 
         CurrentSheep = TryGetClosest(SheepHits);
         HasSheepInRange = CurrentSheep != null;
-
-
+      
     }
 
     /// <summary>

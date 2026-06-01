@@ -33,7 +33,7 @@ MonoBehaviour:
   _sheepRadius: 8
   _playerRadius: 12
   _commanderRadius: 15
-  _fearRadiusforPlayer: 1
+  _fearRadiusforPlayer: 2
   _distanceForTaming: 4
   _threatLayer:
     serializedVersion: 2

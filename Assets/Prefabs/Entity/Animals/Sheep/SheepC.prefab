@@ -576,8 +576,8 @@ MonoBehaviour:
   _showDetectionRangeWires: 1
   _showClosestDetectionLinePermanent: 0
   _showDetectionRangeWiresPermanent: 0
-  _fearDistanceForPlayer: 0
-  _distanceForTamingSheep: 0
+  _fearDistanceForPlayer: 2
+  _distanceForTamingSheep: 4
   _colorThreat: {r: 1, g: 0, b: 0, a: 1}
   _colorSheep: {r: 1, g: 0.9803922, b: 0.9803922, a: 1}
   _colorPlayer: {r: 0, g: 0, b: 1, a: 1}

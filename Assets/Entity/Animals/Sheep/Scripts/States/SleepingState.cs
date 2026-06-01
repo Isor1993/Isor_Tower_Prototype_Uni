@@ -32,7 +32,7 @@ public class SleepingState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(SleepingState)}");       
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(SleepingState)}");       
         _updateTimer.Reset();
         Sheep.Move.StopMoving();
     }

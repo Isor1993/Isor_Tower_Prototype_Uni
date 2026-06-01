@@ -34,7 +34,7 @@ public class FleeState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(FleeState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FleeState)}");
 
         _updateTimer.Reset();
 

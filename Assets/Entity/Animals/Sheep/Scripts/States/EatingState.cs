@@ -30,7 +30,7 @@ public class EatingState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}:Change state => {nameof(EatingState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}:Change state => {nameof(EatingState)}");
         Sheep.Hunger.IsEating = true;
     }
 

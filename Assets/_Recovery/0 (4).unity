@@ -5917,7 +5917,7 @@ Transform:
   m_GameObject: {fileID: 1903277943}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.18, y: 0.72, z: 15.97}
+  m_LocalPosition: {x: 25.33, y: 0.72, z: 15.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6412,8 +6412,8 @@ MonoBehaviour:
     SearchLayer:
       serializedVersion: 2
       m_Bits: 192
-  _leftDistance: 2
-  _forwardDistance: 2
+  _leftDistance: 0.3
+  _forwardDistance: 0.3
   _debugGizmosON: 1
   _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1660057539 &9223372036854775807

@@ -21,6 +21,11 @@ public class SheepFSM
 {
     private SheepStateBase _currentState;
 
+    public bool IsCurentState<T>() where T : SheepStateBase
+    {
+        return _currentState is T;
+    }
+
     /// <summary>
     /// Changes the active sheep state.
     /// Exits the previous state, assigns the new state, and enters it.

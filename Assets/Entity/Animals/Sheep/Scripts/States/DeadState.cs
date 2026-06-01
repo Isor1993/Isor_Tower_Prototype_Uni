@@ -10,7 +10,7 @@ public class DeadState : SheepStateBase
 
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(DeadState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(DeadState)}");
         _spawnTime = Settings.SpawnTime;
         _spawnTimer.Reset();
 

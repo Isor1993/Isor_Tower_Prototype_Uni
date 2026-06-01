@@ -37,7 +37,7 @@ public class PatrolState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(PatrolState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(PatrolState)}");
 
         _patrolTime = Random.Range(Settings.PatrolTimeMin, Settings.PatrolTimeMax);
         _newTargetTime = Settings.PatrolNewTargetTime;
@@ -65,12 +65,16 @@ public class PatrolState : SheepStateBase
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
             return;
         }
-        if(Sheep.Sense.IsPlayerInTameRange&&Sheep.IsTamed)
+        if (Sheep.Sense.HasPlayerInRange)
+        {
+            FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            return;
+        }
+        if (Sheep.Sense.IsPlayerInTameRange&&Sheep.IsTamed)
         {
             FSM.ChangeState(new FollowPlayerState(Sheep, FSM));
             return;
-        }
-
+        }      
         if (Sheep.IsAsleep)
         {
             FSM.ChangeState(new SleepingState(Sheep, FSM));
@@ -82,21 +86,22 @@ public class PatrolState : SheepStateBase
             FSM.ChangeState(new EatingState(Sheep, FSM));
             return;
         }
+        if (Sheep.Move.ShouldWaitForAgentAhead())
+        {
+            //Debug.Log("IS WAITING");
+            Sheep.Move.WaitMoving(true);
+        }
+        else
+        {
+           // Debug.Log("IS NOT WAITING");
+            Sheep.Move.WaitMoving(false);
+        }
 
-        if (_patrolTimer.IsFinished(_patrolTime))
+        if (Sheep.Move.HasReachedDestination())
         {
             FSM.ChangeState(new IdleState(Sheep, FSM));
             return;
-        }
-
-        if (_newTargetTimer.IsFinished(_newTargetTime))
-        {
-            if (Sheep.Move.HasReachedDestination())
-            {
-                _newTargetTimer.Reset();
-                SetNewPatrolTarget();
-            }
-        }
+        }        
     }
 
     /// <summary>

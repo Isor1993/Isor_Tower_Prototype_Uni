@@ -34,7 +34,7 @@ public class IdleState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}: Change state => {nameof(IdleState)}");
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(IdleState)}");
 
         _timer.Reset();
     }
@@ -47,7 +47,7 @@ public class IdleState : SheepStateBase
     {
         _timer.Tick(Time.deltaTime);
 
-        if (Sheep.Sense.HasThreat)
+        /*if (Sheep.Sense.HasThreat)
         {
 
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
@@ -67,6 +67,11 @@ public class IdleState : SheepStateBase
         {            
             FSM.ChangeState(new RegroupState(Sheep, FSM));
             return;
+        }
+        */
+        if(Sheep.Dodge.ShouldDodge)
+        {
+            FSM.ChangeState(new DodgeState(Sheep,FSM,this));
         }
     }
 
