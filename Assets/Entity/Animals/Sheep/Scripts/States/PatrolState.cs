@@ -18,13 +18,15 @@ using UnityEngine;
 /// <summary>
 /// State in which the sheep patrols around the herd area and periodically receives new patrol targets.
 /// </summary>
-public class PatrolState : SheepStateBase
+public class PatrolState : SheepStateBase,IResumeTargetState
 {
     private readonly Timer _patrolTimer = new Timer();
     private readonly Timer _newTargetTimer = new Timer();
 
     private float _patrolTime;
     private float _newTargetTime;
+    private bool _hasResumeTarget;
+    private Vector3 _resumeTarget;
     private Vector3 _newPos;
 
     public PatrolState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
@@ -42,9 +44,14 @@ public class PatrolState : SheepStateBase
         _patrolTime = Random.Range(Settings.PatrolTimeMin, Settings.PatrolTimeMax);
         _newTargetTime = Settings.PatrolNewTargetTime;
 
-        _patrolTimer.Reset();
-        _newTargetTimer.Reset();
+        
 
+        if(_hasResumeTarget)
+        {
+            Sheep.Move.MoveTo(_resumeTarget);
+            _hasResumeTarget = false;
+            return;
+        }
         SetNewPatrolTarget();
     }
 
@@ -62,43 +69,57 @@ public class PatrolState : SheepStateBase
 
         if (Sheep.Sense.HasThreat)
         {
+            _patrolTimer.Reset();
+            _newTargetTimer.Reset();
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
             return;
-        }
-        if (Sheep.Sense.HasPlayerInRange)
+        }    
+        
+        if(Sheep.Dodge.ShouldDodge)
         {
-            FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            
+            FSM.ChangeState(new DodgeState(Sheep, FSM, this));
             return;
         }
+
+        
         if (Sheep.Sense.IsPlayerInTameRange&&Sheep.IsTamed)
         {
+            _patrolTimer.Reset();
+            _newTargetTimer.Reset();
             FSM.ChangeState(new FollowPlayerState(Sheep, FSM));
             return;
         }      
         if (Sheep.IsAsleep)
         {
+            _patrolTimer.Reset();
+            _newTargetTimer.Reset();
             FSM.ChangeState(new SleepingState(Sheep, FSM));
             return;
         }
 
         if (Sheep.Hunger.IsHungry)
         {
+            _patrolTimer.Reset();
+            _newTargetTimer.Reset();
             FSM.ChangeState(new EatingState(Sheep, FSM));
             return;
-        }
-        if (Sheep.Move.ShouldWaitForAgentAhead())
+        }    
+        if(Sheep.IsHerdMoving)
         {
-            //Debug.Log("IS WAITING");
-            Sheep.Move.WaitMoving(true);
+            FSM.ChangeState(new RegroupState(Sheep, FSM));
+            return;
         }
-        else
+        if(Sheep.Sense.IsPlayerTooClose)
         {
-           // Debug.Log("IS NOT WAITING");
-            Sheep.Move.WaitMoving(false);
+            FSM.ChangeState(new FleeState(Sheep, FSM,Sheep.Sense.CurrentPlayer));
+            return;
         }
 
         if (Sheep.Move.HasReachedDestination())
         {
+            _patrolTimer.Reset();
+            _newTargetTimer.Reset();
             FSM.ChangeState(new IdleState(Sheep, FSM));
             return;
         }        
@@ -109,7 +130,7 @@ public class PatrolState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-
+       
     }
 
 
@@ -129,5 +150,11 @@ public class PatrolState : SheepStateBase
 
         _newPos = validPos;
         Sheep.Move.MoveTo(_newPos);
+    }
+
+    public void ResumeTarget(Vector3 target)
+    {
+        _resumeTarget = target;
+        _hasResumeTarget = true;
     }
 }

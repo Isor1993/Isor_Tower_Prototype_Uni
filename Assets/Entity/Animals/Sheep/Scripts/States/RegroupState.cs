@@ -18,12 +18,15 @@ using UnityEngine;
 /// <summary>
 /// State in which the sheep moves back toward the herd or into its assigned herd formation position.
 /// </summary>
-public class RegroupState : SheepStateBase
+public class RegroupState : SheepStateBase,IResumeTargetState
 {
     private const int MAX_TRIES = 100;
 
     private Vector3 targetPos;
     private bool _hasValidTarget;
+    private bool _hasResumeTarget;
+    private Vector3 _resumeTarget;
+    private bool _isFormationTarget;
 
     public RegroupState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
     {
@@ -40,38 +43,24 @@ public class RegroupState : SheepStateBase
 
         _hasValidTarget = false;
 
-        if (Sheep.IsHerdMoving)
+        if (_hasResumeTarget)
         {
-            targetPos = Sheep.HerdManager.GetFormationPositionForSheep(Sheep);
+            targetPos = _resumeTarget;
+            _hasValidTarget = true;
+            _hasResumeTarget = false;
 
-            if (Sheep.Move.TryGetValidTargetPosition(targetPos, out Vector3 validPosition))
-            {
-                targetPos = validPosition;
-                _hasValidTarget = true;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < MAX_TRIES; i++)
-            {
-                targetPos = Sheep.HerdManager.GetRandomRegroupPosition();
-
-                if (Sheep.Move.TryGetValidTargetPosition(targetPos, out Vector3 validPos))
-                {
-                    targetPos = validPos;
-                    _hasValidTarget = true;
-                    break;
-                }
-            }
-        }
-
-        if (!_hasValidTarget)
-        {
-            Debug.LogWarning($"{Sheep.name}: Did not find a valid regroup position after {MAX_TRIES} tries!");
+            Sheep.Move.MoveTo(targetPos);
             return;
         }
 
-        Sheep.Move.MoveTo(targetPos);
+        bool foundTarget = Sheep.IsHerdMoving
+            ? TrySetFormationTarget()
+            : TrySetRandomRegroupTarget();
+
+        if (!foundTarget)
+        {
+            Debug.LogWarning($"{Sheep.name}: Did not find a valid regroup position after {MAX_TRIES} tries!");
+        }
     }
 
     /// <summary>
@@ -88,20 +77,27 @@ public class RegroupState : SheepStateBase
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
             return;
         }
-        if (Sheep.Sense.HasPlayerInRange)
-        {
-            FSM.ChangeState(new OnAlertState(Sheep, FSM));
-            return;
-        }
+
         if (!_hasValidTarget)
         {
             FSM.ChangeState(new PatrolState(Sheep, FSM));
             return;
-        }        
+        }
 
         if (Sheep.IsHerdMoving)
         {
-            if (Sheep.HerdManager.AreAllSheepInPosition())
+            if (!_isFormationTarget)
+            {
+                if (!TrySetFormationTarget())
+                {
+                    Debug.LogWarning($"{Sheep.name}: Could not switch regroup target to formation position.");
+                    return;
+                }
+
+                return;
+            }
+
+            if (Sheep.HerdManager.IsSheepInPosition(Sheep))
             {
                 FSM.ChangeState(new HerdMoving(Sheep, FSM));
                 return;
@@ -114,7 +110,7 @@ public class RegroupState : SheepStateBase
         {
             FSM.ChangeState(new PatrolState(Sheep, FSM));
             return;
-        }       
+        }
     }
 
     /// <summary>
@@ -122,5 +118,48 @@ public class RegroupState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
+    }
+
+    public void ResumeTarget(Vector3 target)
+    {
+        _resumeTarget = target;
+        _hasResumeTarget = true;
+    }
+
+    private bool TrySetFormationTarget()
+    {
+        Debug.Log("Format pos");
+        targetPos = Sheep.HerdManager.GetFormationPositionForSheep(Sheep);
+
+        if (!Sheep.Move.TryGetValidTargetPosition(targetPos, out Vector3 validPosition))
+            return false;
+
+        targetPos = validPosition;
+        _hasValidTarget = true;
+        _isFormationTarget = true;
+
+        Sheep.Move.MoveTo(targetPos);
+        return true;
+    }
+
+    private bool TrySetRandomRegroupTarget()
+    {
+        Debug.Log("Random pos pos");
+        for (int i = 0; i < MAX_TRIES; i++)
+        {
+            targetPos = Sheep.HerdManager.GetRandomRegroupPosition();
+
+            if (Sheep.Move.TryGetValidTargetPosition(targetPos, out Vector3 validPos))
+            {
+                targetPos = validPos;
+                _hasValidTarget = true;
+                _isFormationTarget = false;
+
+                Sheep.Move.MoveTo(targetPos);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

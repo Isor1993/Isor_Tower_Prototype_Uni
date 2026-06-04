@@ -62,7 +62,7 @@ public class HerdManager : MonoBehaviour
 
     private Vector3 _lastHerdAnchorPosition;
 
-    
+
 
     private void Start()
     {
@@ -79,7 +79,7 @@ public class HerdManager : MonoBehaviour
     /// <returns>The current or last known herd anchor position.</returns>
     public Vector3 GetHerdAnchorPosition()
     {
-        if (_commander.IsTamed&&IsCommanderAlive)
+        if (_commander.IsTamed && IsCommanderAlive)
         {
             return _lastHerdAnchorPosition = _commander.transform.position;
         }
@@ -169,6 +169,28 @@ public class HerdManager : MonoBehaviour
     {
         return GetRandomPositionInRadius(_spawnRadius);
 
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="Object"></param>
+    /// <returns></returns>
+    public bool IsSheepInPosition(Sheep sheep)
+    {
+        if (!IsHerdMember(sheep))
+        {
+            Debug.LogError($"{name}: Sheep {sheep?.name} is not part of this herd.");
+            return false;
+        }
+
+        if (sheep.Move == null)
+        {
+            Debug.LogError($"{name}: Sheep {sheep.name} has no Move behaviour.");
+            return false;
+        }
+
+        return sheep.Move.HasReachedDestination();
     }
 
     /// <summary>
@@ -344,9 +366,9 @@ public class HerdManager : MonoBehaviour
     /// <param name="isHerdmoving"></param>
     public void SetAllSheepHerdMoving(bool isHerdmoving)
     {
-        foreach(Sheep sheep in _herdPool)
+        foreach (Sheep sheep in _herdPool)
         {
-            if(sheep == null)
+            if (sheep == null)
                 continue;
             if (sheep.IsCommander)
                 continue;

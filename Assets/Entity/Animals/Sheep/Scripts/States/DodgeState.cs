@@ -15,12 +15,10 @@ public class DodgeState : SheepStateBase
     {
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(DodgeState)}");
 
-        Sheep.Dodge.StartDodge(out _previousTarget);
-    }
-    public override void Tick()
-    {
-        if (!Sheep.Dodge.IsDodging)
+        if (!Sheep.Dodge.TryStartDodge(out _previousTarget))
         {
+            Debug.Log($"Dodge not possible! Return to Previous State => {_returnState}.");
+
             if (_returnState != null)
             {
                 FSM.ChangeState(_returnState);
@@ -29,12 +27,31 @@ public class DodgeState : SheepStateBase
             {
                 FSM.ChangeState(new IdleState(Sheep, FSM));
             }
+        }        
+    }
+    public override void Tick()
+    {
+        if (!Sheep.Dodge.IsDodging)
+        {
+            if(_returnState is IResumeTargetState resumeState)
+            {
+                resumeState.ResumeTarget(_previousTarget);
+            }            
+            if (_returnState != null)
+            {
+                FSM.ChangeState(_returnState);
+            }
+            else
+            {
+                Debug.Log($" ReturnState {_returnState} is null.");
+                FSM.ChangeState(new IdleState(Sheep, FSM));
+            }
         }
 
     }
 
     public override void Exit()
     {
-        base.Exit();
+      
     }
 }

@@ -47,13 +47,13 @@ public class IdleState : SheepStateBase
     {
         _timer.Tick(Time.deltaTime);
 
-        /*if (Sheep.Sense.HasThreat)
+         if(Sheep.Sense.HasThreat)
         {
 
             FSM.ChangeState(new OnAlertState(Sheep, FSM));
             return;
-        }
-        if(Sheep.Sense.HasPlayerInRange)
+        }        
+        if (Sheep.Sense.HasPlayerInRange)
         {
             FSM.ChangeState(new OnAlertState(Sheep,FSM));
             return;
@@ -67,12 +67,8 @@ public class IdleState : SheepStateBase
         {            
             FSM.ChangeState(new RegroupState(Sheep, FSM));
             return;
-        }
-        */
-        if(Sheep.Dodge.ShouldDodge)
-        {
-            FSM.ChangeState(new DodgeState(Sheep,FSM,this));
-        }
+        }       
+        
     }
 
     /// <summary>

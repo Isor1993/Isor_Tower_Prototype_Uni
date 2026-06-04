@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections.Generic;
-using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -25,6 +24,7 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
     [SerializeField]
     private List<DodgeRaycastSetting> _raycastSettings = new List<DodgeRaycastSetting>();
 
+   
     [SerializeField] private float _leftDistance = 3f;
     [SerializeField] private float _forwardDistance = 3f;
 
@@ -33,7 +33,9 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
     [SerializeField] private bool _debugGizmosON;
     [SerializeField] private Color _rayColor;
 
+   
 
+ 
 
 
     /// <summary>
@@ -47,19 +49,19 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
     public override bool IsDodging => _isDodging;
 
     private bool _obstacleDetected = false;
-   
+
     private RaycastHit _obstacleHit;
     private Transform _obstacle;
+    
 
     private NavMeshAgent _agent;
     private NavMeshPath _navPath;
-    private SheepMoveBehaviour _move;
+   
 
     private Vector3 DrawPoint;
     private bool _isDodging = false;
     private bool _hasDrawPoint = false;
-
-    private Vector3 _previousDestination;
+    
     private bool _hasPreviousDestination;
 
 
@@ -75,7 +77,7 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
     {
         _navPath = new NavMeshPath();
         _agent = GetComponent<NavMeshAgent>();
-        _move = GetComponent<SheepMoveBehaviour>();
+        
 
 
     }
@@ -96,27 +98,27 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
         {
             _isDodging = false;
             _hasDrawPoint = false;
-            
+
 
         }
 
     }
 
-    public override void StartDodge(out Vector3 previousTarget)
+    public override bool TryStartDodge(out Vector3 previousTarget)
     {
-        if(_agent==null)
+        if (_agent == null)
         {
             previousTarget = transform.position;
-            return;
+            return false;
         }
 
-        previousTarget = _agent.destination;
         _hasPreviousDestination = _agent.hasPath;
+
+        previousTarget = _hasPreviousDestination? _agent.destination:transform.position;
+
         if (_isDodging)
-            return;
-        if (_obstacleHit.transform == null)
-            return;
-        _isDodging = true;
+            return false;
+       
 
         _obstacle = _obstacleHit.transform;
         Vector3 obstacleDir = (_obstacle.position - transform.position).normalized;
@@ -138,29 +140,31 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
 
         Vector3 newOffset = dodgeDir * _leftDistance + transform.forward * _forwardDistance;
         Vector3 newPos = transform.position + newOffset;
-        if(!NavMesh.SamplePosition(newPos,out NavMeshHit hit,1f,_agent.areaMask))
+        if (!NavMesh.SamplePosition(newPos, out NavMeshHit hit, 1f, _agent.areaMask))
         {
             Debug.Log("No position to dodge found!");
-            return;
+            return false;
         }
         Vector3 validPos = hit.position;
-        if(!_agent.CalculatePath(validPos,_navPath))
+        if (!_agent.CalculatePath(validPos, _navPath))
         {
             Debug.Log("No caluclated path to dodge found!");
-            return;
+            return false;
         }
-        if(_navPath.status!=NavMeshPathStatus.PathComplete)
+        if (_navPath.status != NavMeshPathStatus.PathComplete)
         {
             Debug.Log("No complete path to dodge found!");
-            return;
+            return false;
         }
 
         DrawPoint = validPos;
         _hasDrawPoint = true;
         _agent.SetDestination(validPos);
+        _isDodging = true;
+        return true;
     }
 
-
+   
 
 
 
@@ -201,6 +205,7 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
             {
                 //Debug.Log($"{setting.Name} hit {hit.collider.name}");
                 _obstacleHit = hit;
+              
                 return true;
             }
         }

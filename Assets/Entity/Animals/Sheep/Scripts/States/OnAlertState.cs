@@ -61,6 +61,7 @@ public class OnAlertState : SheepStateBase
                 FSM.ChangeState(new FleeState(Sheep, FSM, Sheep.Sense.CurrentThreat));
                 return;
             }
+            
             if (Sheep.Sense.HasPlayerInRange && Sheep.IsTamed)
             {
             FSM.ChangeState(new FollowPlayerState(Sheep, FSM));

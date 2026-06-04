@@ -520,6 +520,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 781477694}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -573,7 +577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -618,6 +622,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 781477687}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 781477694}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &320830562 stripped
 MonoBehaviour:
@@ -1629,6 +1636,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 753199054}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -1682,7 +1693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -1727,6 +1738,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 753199047}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 753199054}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &753199039 stripped
 MonoBehaviour:
@@ -1767,6 +1781,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &753199054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280336031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1 &757787927
 GameObject:
   m_ObjectHideFlags: 0
@@ -1924,6 +1985,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &781477694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781477680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1001 &827326950
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1966,7 +2074,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287750192584677774, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.799
+      value: 11.89
       objectReference: {fileID: 0}
     - target: {fileID: 2287750192584677774, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1974,7 +2082,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287750192584677774, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.685
+      value: 6.27
       objectReference: {fileID: 0}
     - target: {fileID: 2287750192584677774, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2024,6 +2132,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 1019169288}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
@@ -2078,7 +2190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -2123,6 +2235,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1019169281}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1019169288}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &827326951 stripped
 MonoBehaviour:
@@ -2524,6 +2639,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 1048300038}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -2577,7 +2696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -2622,6 +2741,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1048300031}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1048300038}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &892510115 stripped
 MonoBehaviour:
@@ -2740,6 +2862,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 981653551}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -2793,7 +2919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -2838,6 +2964,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 981653544}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 981653551}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &981653536 stripped
 MonoBehaviour:
@@ -2878,6 +3007,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &981653551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1 &1019169274 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
@@ -2906,6 +3082,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1019169288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019169274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1 &1043190307
 GameObject:
   m_ObjectHideFlags: 0
@@ -3063,6 +3286,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1048300038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048300024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1 &1050397958
 GameObject:
   m_ObjectHideFlags: 0
@@ -3583,6 +3853,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 1300776709}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -3644,7 +3918,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -3689,6 +3963,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1300776702}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1300776709}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &1300776694 stripped
 MonoBehaviour:
@@ -3729,6 +4006,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1300776709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207904003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1 &1303397886
 GameObject:
   m_ObjectHideFlags: 0
@@ -4897,6 +5221,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 1559975275}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -4950,7 +5278,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -4995,6 +5323,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1559975268}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1559975275}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!4 &1559975260 stripped
 Transform:
@@ -5035,6 +5366,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1559975275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231901713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1001 &1562778643
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5136,6 +5514,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      propertyPath: _dodge
+      value: 
+      objectReference: {fileID: 1562778659}
+    - target: {fileID: 3976155118165909946, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -5189,7 +5571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7824011101757272634, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       propertyPath: m_Layer
@@ -5234,6 +5616,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1562778652}
+    - targetCorrespondingSourceObject: {fileID: 7815444721640180196, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1562778659}
   m_SourcePrefab: {fileID: 100100000, guid: 8db4652fd6b2fbb4fbdf445949c3fcc0, type: 3}
 --- !u!114 &1562778644 stripped
 MonoBehaviour:
@@ -5274,6 +5659,53 @@ CapsuleCollider:
   m_Height: 0.55
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1562778659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861635908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5c6799443e0ed4e9dc6e6cfb2f66af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SheepDodgeBehaviour
+  _raycastSettings:
+  - Name: Raycast 1
+    LocalDirection: {x: -0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 2
+    LocalDirection: {x: -0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 3
+    LocalDirection: {x: 0, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 4
+    LocalDirection: {x: 0.06, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  - Name: Raycast 5
+    LocalDirection: {x: 0.12, y: 0.12, z: 1}
+    Distance: 3
+    SearchLayer:
+      serializedVersion: 2
+      m_Bits: 192
+  _leftDistance: 3
+  _forwardDistance: 3
+  _debugGizmosON: 1
+  _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1 &1581297472
 GameObject:
   m_ObjectHideFlags: 0
@@ -5917,7 +6349,7 @@ Transform:
   m_GameObject: {fileID: 1903277943}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.18, y: 0.72, z: 15.97}
+  m_LocalPosition: {x: 24.88, y: 0.72, z: 5.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5969,6 +6401,7 @@ GameObject:
   - component: {fileID: 1916467707}
   - component: {fileID: 1916467706}
   - component: {fileID: 1916467705}
+  - component: {fileID: 1916467709}
   m_Layer: 0
   m_Name: Moon
   m_TagString: Untagged
@@ -6069,6 +6502,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 98282201}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &1916467709
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916467704}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &2012305917
 GameObject:
   m_ObjectHideFlags: 0
@@ -6283,6 +6732,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7876195855462696168}
     - target: {fileID: 3988038414662824616, guid: a72c8ca120bab214f984481df717c774, type: 3}
+      propertyPath: _isTamed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3988038414662824616, guid: a72c8ca120bab214f984481df717c774, type: 3}
       propertyPath: _herdManager
       value: 
       objectReference: {fileID: 1519260170}
@@ -6384,36 +6837,36 @@ MonoBehaviour:
   _raycastSettings:
   - Name: Raycast 1
     LocalDirection: {x: -0.12, y: 0.12, z: 1}
-    Distance: 5
+    Distance: 3
     SearchLayer:
       serializedVersion: 2
       m_Bits: 192
   - Name: Raycast 2
     LocalDirection: {x: -0.06, y: 0.12, z: 1}
-    Distance: 5
+    Distance: 3
     SearchLayer:
       serializedVersion: 2
       m_Bits: 192
   - Name: Raycast 3
     LocalDirection: {x: 0, y: 0.12, z: 1}
-    Distance: 5
+    Distance: 3
     SearchLayer:
       serializedVersion: 2
       m_Bits: 192
   - Name: Raycast 4
     LocalDirection: {x: 0.06, y: 0.12, z: 1}
-    Distance: 5
+    Distance: 3
     SearchLayer:
       serializedVersion: 2
       m_Bits: 192
   - Name: Raycast 5
     LocalDirection: {x: 0.12, y: 0.12, z: 1}
-    Distance: 5
+    Distance: 3
     SearchLayer:
       serializedVersion: 2
       m_Bits: 192
-  _leftDistance: 2
-  _forwardDistance: 2
+  _leftDistance: 3
+  _forwardDistance: 3
   _debugGizmosON: 1
   _rayColor: {r: 1, g: 0.31840813, b: 0, a: 1}
 --- !u!1660057539 &9223372036854775807

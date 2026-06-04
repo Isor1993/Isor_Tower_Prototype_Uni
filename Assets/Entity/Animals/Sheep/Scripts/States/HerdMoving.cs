@@ -32,6 +32,10 @@ public class HerdMoving : SheepStateBase
     public override void Enter()
     {
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(HerdMoving)}");
+        if (!Sheep.IsCommander)
+        {
+            Sheep.Move.SetHerdMovement();
+        }
     }
 
     /// <summary>
@@ -78,6 +82,6 @@ public class HerdMoving : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-      
+        Sheep.Move.SetWalkMovement();
     }
 }

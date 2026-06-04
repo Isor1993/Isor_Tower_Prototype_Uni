@@ -21,6 +21,7 @@ using UnityEngine;
 /// </summary>
 public class FollowPlayerState : SheepStateBase
 {
+    private bool _isHerdmovingActivated ;
     public FollowPlayerState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
     {
 
@@ -32,10 +33,7 @@ public class FollowPlayerState : SheepStateBase
     public override void Enter()
     {
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FollowPlayerState)}");
-        if (Sheep.IsCommander)
-        {
-            Sheep.HerdManager.SetAllSheepHerdMoving(true);
-        }
+      _isHerdmovingActivated = false;
     }
 
     /// <summary>
@@ -60,6 +58,14 @@ public class FollowPlayerState : SheepStateBase
             return;
 
         Sheep.Move.FollowBehind(Sheep.Sense.CurrentPlayer);
+        if(Sheep.Move.HasReachedDestination()&&!_isHerdmovingActivated)
+        {
+            if (Sheep.IsCommander)
+            {
+                Sheep.HerdManager.SetAllSheepHerdMoving(true);
+                _isHerdmovingActivated = true;
+            }
+        }
 
     }
 
@@ -71,6 +77,7 @@ public class FollowPlayerState : SheepStateBase
         if (Sheep.IsCommander)
         {
             Sheep.HerdManager.SetAllSheepHerdMoving(false);
+            _isHerdmovingActivated = false;
         }
     }
 }
