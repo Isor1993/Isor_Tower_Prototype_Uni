@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41b7526b8b4400649b8bdaa039f91eb6, type: 3}
   m_Name: Commander_Sheep
   m_EditorClassIdentifier: Assembly-CSharp::SheepSettings
-  _typ: 1
+  _type: 1
   _maxHealth: 100
   _hungerTickInterval: 10
   _hungerTickRate: 4
   _eatTickRate: 4
-  _hungerThreshhold: 50
+  _hungerThreshold: 50
   _maxHunger: 100
   _starvationDamage: 1
   _walkSpeed: 1
@@ -33,7 +33,7 @@ MonoBehaviour:
   _sheepRadius: 8
   _playerRadius: 12
   _commanderRadius: 15
-  _fearRadiusforPlayer: 2
+  _fearRadiusForPlayer: 2
   _distanceForTaming: 4
   _threatLayer:
     serializedVersion: 2

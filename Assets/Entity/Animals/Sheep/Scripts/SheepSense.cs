@@ -222,7 +222,7 @@ public class SheepSense : MonoBehaviour
         _colorSheep = _settings.ColorSheep;
         _colorPlayer = _settings.ColorPlayer;
         _colorCommander = _settings.ColorCommander;
-        _fearDistanceForPlayer = _settings.FearRadiusforPlayer;
+        _fearDistanceForPlayer = _settings.FearRadiusForPlayer;
         _distanceForTamingSheep = _settings.DistanceForTaming;
     }
 

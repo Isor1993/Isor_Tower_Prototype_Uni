@@ -34,6 +34,7 @@ public class HerdMovingState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(HerdMovingState)}");
 #endif
+        Sheep.Animator.SetBool("Move", true);
         if (!Sheep.IsCommander)
         {
             Sheep.Move.SetHerdMovement();
@@ -85,5 +86,6 @@ public class HerdMovingState : SheepStateBase
     {
         if (!Sheep.IsCommander)
             Sheep.Move.SetWalkMovement();
+        Sheep.Animator.SetBool("Move", false);
     }
 }

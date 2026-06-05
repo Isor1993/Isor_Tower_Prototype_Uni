@@ -37,7 +37,7 @@ public class IdleState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(IdleState)}");
 #endif
-
+        Sheep.Animator.SetBool("PlayIdle", true);
         _timer.Reset();
     }
 
@@ -49,6 +49,11 @@ public class IdleState : SheepStateBase
     {
         _timer.Tick(Time.deltaTime);
 
+        if(Sheep.IsAsleep)
+        {
+            FSM.ChangeState<SleepingState>();
+            return;
+        }
         if (Sheep.Sense.HasThreat)
         {
             FSM.ChangeState<OnAlertState>();
@@ -76,5 +81,6 @@ public class IdleState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
+        Sheep.Animator.SetBool("PlayIdle", false);
     }
 }

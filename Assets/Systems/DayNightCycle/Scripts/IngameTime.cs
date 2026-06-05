@@ -86,6 +86,12 @@ public class IngameTime : MonoBehaviour
     [Tooltip("How many ingame hours are required for one ingame day.")]
     [SerializeField] private int _timeConversionRateHours = 24;
 
+    [Header("Debug Time Controls")]
+    [SerializeField] private bool _setDebugTime;
+    [SerializeField, Range(0, 23)] private int _debugHour;
+    [SerializeField, Range(0, 59)] private int _debugMinute;
+    [SerializeField, Range(0, 59)] private int _debugSecond;
+
     private int _currentSeconds;
     private int _currentMinutes;
     private int _currentHours;
@@ -122,6 +128,13 @@ public class IngameTime : MonoBehaviour
 
     private void Update()
     {
+        if (_setDebugTime)
+        {
+            _setDebugTime = false;
+            SetTime(_debugHour, _debugMinute, _debugSecond);
+            return;
+        }
+
         if (!_isPlaying)
         {
             return;
@@ -141,11 +154,50 @@ public class IngameTime : MonoBehaviour
 #if UNITY_EDITOR
         if (_currentSeconds != _lastCurrentSecond)
         {
-           // Debug.Log($"Day : {_currentDays} Time:[{_currentHours}:{_currentMinutes}:{_currentSeconds}]");
+            // Debug.Log($"Day : {_currentDays} Time:[{_currentHours}:{_currentMinutes}:{_currentSeconds}]");
             _lastCurrentSecond = _currentSeconds;
         }
 #endif
     }
+
+    /// <summary>
+    /// Sets the current ingame time to a specific day, hour, minute, and second.
+    /// Values are clamped to the configured time conversion ranges.
+    /// </summary>
+    /// <param name="days">The ingame day value to set.</param>
+    /// <param name="hours">The ingame hour value to set.</param>
+    /// <param name="minutes">The ingame minute value to set.</param>
+    /// <param name="seconds">The ingame second value to set.</param>
+    public void SetTime(int days, int hours, int minutes, int seconds)
+    {
+        _currentDays = Mathf.Max(0, days);
+        _currentHours = Mathf.Clamp(hours, 0, _timeConversionRateHours - 1);
+        _currentMinutes = Mathf.Clamp(minutes, 0, _timeConversionRateMinutes - 1);
+        _currentSeconds = Mathf.Clamp(seconds, 0, _timeConversionRateSeconds - 1);
+
+        _elapsedTime = 0f;
+    }
+
+    /// <summary>
+    /// Sets the current ingame time to a specific hour, minute, and second while keeping the current day.
+    /// </summary>
+    /// <param name="hours">The ingame hour value to set.</param>
+    /// <param name="minutes">The ingame minute value to set.</param>
+    /// <param name="seconds">The ingame second value to set.</param>
+    public void SetTime(int hours, int minutes, int seconds)
+    {
+        SetTime(_currentDays, hours, minutes, seconds);
+    }
+
+    /// <summary>
+    /// Sets the current ingame hour while keeping the current day, minute, and second.
+    /// </summary>
+    /// <param name="hours">The ingame hour value to set.</param>
+    public void SetHour(int hours)
+    {
+        SetTime(_currentDays, hours, _currentMinutes, _currentSeconds);
+    }
+
 
     /// <summary>
     /// aves the current ingame time state.
@@ -156,6 +208,7 @@ public class IngameTime : MonoBehaviour
 #if (UNITY_EDITOR)
         Debug.Log("Saved game !");
 #endif
+      
     }
 
     /// <summary>
@@ -182,6 +235,9 @@ public class IngameTime : MonoBehaviour
 #if (UNITY_EDITOR)
         Debug.Log("Load saved Time !");
 #endif
+
+        SetTime(6, 0, 0);
+
     }
 
     private void OnDestroy()

@@ -44,7 +44,7 @@ public class RegroupState : SheepStateBase, IResumeTargetState
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(RegroupState)}");
 #endif
-
+        Sheep.Animator.SetBool("Move", true);
         _hasValidTarget = false;
         _isFormationTarget = false;
 
@@ -128,6 +128,7 @@ public class RegroupState : SheepStateBase, IResumeTargetState
     /// </summary>
     public override void Exit()
     {
+        Sheep.Animator.SetBool("Move", false);
     }
 
     /// <summary>

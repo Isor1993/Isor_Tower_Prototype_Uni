@@ -49,7 +49,7 @@ public class FleeState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FleeState)}");
 #endif
-
+        Sheep.Animator.SetBool("Run", true);
         _updateTimer.Reset();
 
         Sheep.Move.SetFleeMovement();
@@ -61,6 +61,7 @@ public class FleeState : SheepStateBase
         }
 
         Sheep.Move.FleeFrom(_threat.position);
+      
     }
 
     /// <summary>
@@ -100,5 +101,6 @@ public class FleeState : SheepStateBase
     {
         Sheep.Move.SetWalkMovement();
         _threat = null;
+        Sheep.Animator.SetBool("Run", false);
     }
 }

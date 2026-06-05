@@ -69,14 +69,14 @@ public class DayNightCycleEventManager : MonoBehaviour
     {
         for (int i = _subscribers.Count - 1; i >= 0; i--)
         {
-            if (_subscribers[i] ==null)
+            if (_subscribers[i] == null)
             {
                 _subscribers.RemoveAt(i);
-                continue;                
+                continue;
             }
 
             _subscribers[i].OnDayPhaseChanged(previous, current);
-            
+
         }
     }
 
@@ -86,12 +86,21 @@ public class DayNightCycleEventManager : MonoBehaviour
     /// <param name="listener">The listener that should receive day phase change events.</param>
     public void Subscribe(IDayNightListener listener)
     {
-        if (listener == null || _subscribers.Contains(listener))
-        {
+        if (listener == null)
             return;
+
+        if (!_subscribers.Contains(listener))
+        {
+            _subscribers.Add(listener);
         }
 
-        _subscribers.Add(listener);
+        if (_dayNightCycle == null)
+            return;
+
+        if (_dayNightCycle.CurrentDayPhase == DayPhase.None)
+            return;
+
+        listener.OnDayPhaseChanged(_dayNightCycle.CurrentDayPhase, _dayNightCycle.CurrentDayPhase);
     }
 
     /// <summary>

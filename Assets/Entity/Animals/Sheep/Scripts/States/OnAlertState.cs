@@ -39,6 +39,7 @@ public class OnAlertState : SheepStateBase
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(OnAlertState)}");
 #endif
 
+        Sheep.Animator.SetBool("PlayIdle", true);
         _alertTimer.Reset();
         _reactionTimer.Reset();
     }
@@ -89,6 +90,7 @@ public class OnAlertState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
+        Sheep.Animator.SetBool("PlayIdle", false);
     }
 
     /// <summary>

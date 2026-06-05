@@ -34,6 +34,7 @@ public class EatingState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(EatingState)}");
 #endif
+        Sheep.Animator.SetBool("Eat", true);
         Sheep.Hunger.IsEating = true;
     }
 
@@ -49,6 +50,11 @@ public class EatingState : SheepStateBase
             FSM.ChangeState<OnAlertState>();
             return;
         }
+        if(Sheep.IsAsleep)
+        {
+            FSM.ChangeState<SleepingState>();
+            return;
+        }
         if (Sheep.Hunger.IsFull)
         {
             FSM.ChangeState<PatrolState>();
@@ -61,6 +67,8 @@ public class EatingState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
+
         Sheep.Hunger.IsEating = false;
+        Sheep.Animator.SetBool("Eat", false);
     }
 }

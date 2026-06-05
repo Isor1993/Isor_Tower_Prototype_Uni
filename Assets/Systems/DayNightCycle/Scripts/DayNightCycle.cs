@@ -20,6 +20,7 @@ using UnityEngine;
 /// </summary>
 public enum DayPhase
 {
+    None,
     Morning,
     Afternoon,
     Evening,
@@ -42,7 +43,7 @@ public class DayNightCycle : MonoBehaviour
 
     [Header("Debug")]
     [Tooltip("The currently active day phase at runtime.")]
-    [SerializeField] private DayPhase _currentPhase;
+    [SerializeField] private DayPhase _currentPhase=DayPhase.None;
     [Tooltip("The current progress through the active day, normalized from 0 to 1.")]
     [SerializeField] private float _dayProgress;
 
@@ -61,13 +62,13 @@ public class DayNightCycle : MonoBehaviour
     /// </summary>
     public event Action<DayPhase, DayPhase> OnDayPhaseChanged;
 
-    private DayPhase _previousPhase;
+    private DayPhase _previousPhase= DayPhase.None;
     private IngameTime _ingameTime;
 
     /// <summary>
     /// Initializes the day-night cycle by connecting to the global ingame time instance.
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         _ingameTime = IngameTime.Instance;
         if(_ingameTime==null)

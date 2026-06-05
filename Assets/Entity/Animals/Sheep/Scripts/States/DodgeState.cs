@@ -50,7 +50,7 @@ public class DodgeState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(DodgeState)}");
 #endif
-
+        Sheep.Animator.SetBool("Move", true);
         _hasReturned = false;
 
         if (_returnState == null)
@@ -90,6 +90,7 @@ public class DodgeState : SheepStateBase
         _returnState = null;
         _previousTarget = Vector3.zero;
         _hasReturned = false;
+        Sheep.Animator.SetBool("Move", false);
     }
 
     /// <summary>

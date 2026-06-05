@@ -143,6 +143,14 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// </summary>
     public bool IsTamed => _isTamed;
 
+    /// <summary>
+    /// Get animator from sheep.
+    /// </summary>
+    public Animator Animator { get => _animator; set => _animator = value; }
+
+    private Animator _animator;
+
+
     private void Awake()
     {
         Health = GetComponent<SheepHealth>();
@@ -151,6 +159,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Move = GetComponent<SheepMoveBehaviour>();
         _agent = GetComponent<NavMeshAgent>();
         _visualRoot = GetComponentInChildren<SkinnedMeshRenderer>();
+        Animator = GetComponent<Animator>();
 
         FSM = new SheepFSM();
         _typ = Settings.Typ;
@@ -159,17 +168,18 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     private void Start()
     {
+        if (_eventManager != null)
+            _eventManager.Subscribe(this);
+
         FSM.ChangeState<IdleState>();
     }
 
     private void OnEnable()
-    {
-        if (_eventManager != null)
-            _eventManager.Subscribe(this);
+    {       
 
         if (Health != null)
         {
-            Health.OnDied += HandleDeath;
+            Health.OnDied += TransisionDeadState;
             Health.OnDamaged += HandleDamage;
         }
 
@@ -184,7 +194,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
         if (Health != null)
         {
-            Health.OnDied -= HandleDeath;
+            Health.OnDied -= TransisionDeadState;
             Health.OnDamaged -= HandleDamage;
         }
 
@@ -198,6 +208,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
         HandleHerdMovementTransition();
     }
 
+
     /// <summary>
     /// Reacts to day-night phase changes and toggles the sheep's sleeping state.
     /// </summary>
@@ -206,20 +217,20 @@ public class Sheep : MonoBehaviour, IDayNightListener
     public void OnDayPhaseChanged(DayPhase previousPhase, DayPhase currentPhase)
     {
 #if UNITY_EDITOR
-        Debug.Log("Sheep reacting on changed DayPhase");
+        Debug.Log($"{name} reacting on changed DayPhase: {previousPhase} -> {currentPhase}");
 #endif
         if (currentPhase == DayPhase.Night)
         {
             _isSleeping = true;
 #if UNITY_EDITOR
-            Debug.Log("Sheep => Sleeping");
+            Debug.Log($"{name} => Sleeping | IsAsleep: {_isSleeping}");
 #endif
         }
         else
         {
             _isSleeping = false;
 #if UNITY_EDITOR
-            Debug.Log("Sheep => Awake");
+            Debug.Log($"{name} => Awake | IsAsleep: {_isSleeping}");
 #endif
         }
     }
@@ -272,7 +283,13 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// Handles sheep death by clearing tame state, disabling active behavior components,
     /// switching to the dead state, and moving the sheep to the graveyard position.
     /// </summary>
-    private void HandleDeath()
+    private void TransisionDeadState()
+    {
+        Move.StopMoving();
+        FSM.ChangeState<DeadState>();
+    }
+
+    public void HandleDeath()
     {
         _isTamed = false;
         _agent.enabled = false;
@@ -280,7 +297,6 @@ public class Sheep : MonoBehaviour, IDayNightListener
         Sense.enabled = false;
         Hunger.enabled = false;
 
-        FSM.ChangeState<DeadState>();
         transform.position = _graveyardPosition.position;
         _visualRoot.enabled = true;
     }

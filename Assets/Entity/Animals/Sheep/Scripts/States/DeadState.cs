@@ -22,6 +22,9 @@ public class DeadState : SheepStateBase
 {
     private readonly Timer _spawnTimer = new Timer();
     private float _spawnTime;
+    private readonly Timer _deSpawnTimer = new Timer();
+    private float _deSpawnTime;
+    private bool _hasHandeledDeath;
 
     public DeadState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
     {
@@ -35,8 +38,12 @@ public class DeadState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(DeadState)}");
 #endif
+        Sheep.Animator.SetBool("Dead", true);
         _spawnTime = Settings.SpawnTime;
+        _deSpawnTime = Settings.DeSpawnTime;
         _spawnTimer.Reset();
+        _deSpawnTimer.Reset();
+        _hasHandeledDeath = false;
     }
 
     /// <summary>
@@ -44,7 +51,17 @@ public class DeadState : SheepStateBase
     /// </summary>
     public override void Tick()
     {
+        _deSpawnTimer.Tick(Time.deltaTime);
         _spawnTimer.Tick(Time.deltaTime);
+
+        if (!_deSpawnTimer.IsFinished(_deSpawnTime))
+            return;
+        if (!_hasHandeledDeath)
+        {
+            Sheep.HandleDeath();
+            _hasHandeledDeath = true;
+        }
+
         if (_spawnTimer.IsFinished(_spawnTime))
         {
             Sheep.HandleSpawn();
@@ -56,5 +73,6 @@ public class DeadState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
+        Sheep.Animator.SetBool("Dead", false);
     }
 }

@@ -38,6 +38,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(PatrolState)}");
 #endif
+        Sheep.Animator.SetBool("Move", true);
 
         if (_hasResumeTarget)
         {
@@ -82,13 +83,13 @@ public class PatrolState : SheepStateBase, IResumeTargetState
             return;
         }
 
-        if (Sheep.IsAsleep)
+        if (Sheep.IsAsleep && Sheep.Move.HasReachedDestination())
         {
             FSM.ChangeState<SleepingState>();
             return;
         }
 
-        if (Sheep.Hunger.IsHungry)
+        if (Sheep.Hunger.IsHungry && Sheep.Move.HasReachedDestination())
         {
             FSM.ChangeState<EatingState>();
             return;
@@ -116,7 +117,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
         }
 
         if (Sheep.Move.HasReachedDestination())
-        {
+        {           
             FSM.ChangeState<IdleState>();
             return;
         }
@@ -127,6 +128,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
     /// </summary>
     public override void Exit()
     {
+        Sheep.Animator.SetBool("Move", false);
     }
 
     /// <summary>
@@ -146,6 +148,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
         }
 
         Sheep.Move.MoveTo(validPos);
+
     }
 
     /// <summary>
@@ -156,5 +159,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
     {
         _resumeTarget = target;
         _hasResumeTarget = true;
+
+
     }
 }

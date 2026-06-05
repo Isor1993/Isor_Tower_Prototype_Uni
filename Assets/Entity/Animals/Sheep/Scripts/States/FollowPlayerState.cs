@@ -38,6 +38,7 @@ public class FollowPlayerState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FollowPlayerState)}");
 #endif
+        Sheep.Animator.SetBool("Move", true);
         _isHerdMovingActivated = false;
         Sheep.Move.SetAgentStopDistance(_followDistanceAgent);
     }
@@ -108,5 +109,6 @@ public class FollowPlayerState : SheepStateBase
             Sheep.HerdManager.SetAllSheepHerdMoving(false);
             _isHerdMovingActivated = false;
         }
+        Sheep.Animator.SetBool("Move", false);
     }
 }

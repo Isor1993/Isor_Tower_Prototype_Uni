@@ -126,7 +126,7 @@ public class SheepHunger : MonoBehaviour
         _hungerTickInterval = _settings.HungerTickInterval;
         _hungerTick = _settings.HungerTick;
         _eatTick = _settings.EatTickRate;
-        _hungerThreshold = _settings.HungerThreshhold;
+        _hungerThreshold = _settings.HungerThreshold;
         _starvationDamage = _settings.StarvationDamage;
     }
 

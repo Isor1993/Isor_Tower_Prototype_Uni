@@ -36,6 +36,7 @@ public class SleepingState : SheepStateBase
 #if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(SleepingState)}");
 #endif
+        Sheep.Animator.SetBool("Sleep", true);
         _updateTimer.Reset();
         Sheep.Move.StopMoving();
         Sheep.Hunger.IsHungerActive = false;
@@ -66,5 +67,6 @@ public class SleepingState : SheepStateBase
     public override void Exit()
     {
         Sheep.Hunger.IsHungerActive = true;
+        Sheep.Animator.SetBool("Sleep", false);
     }
 }
