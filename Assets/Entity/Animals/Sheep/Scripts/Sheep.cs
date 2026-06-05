@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -72,7 +73,6 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     private bool _isSleeping = false;
 
-
     /// <summary>
     /// Gets the herd manager assigned to this sheep.
     /// </summary>
@@ -117,6 +117,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// Gets the type of this sheep inside the herd.
     /// </summary>
     public SheepType Typ => _typ;
+
     /// <summary>
     /// Gets the state settings assigned to this sheep.
     /// </summary>
@@ -129,7 +130,7 @@ public class Sheep : MonoBehaviour, IDayNightListener
 
     /// <summary>
     /// Indicates whether this sheep is currently alive.
-    /// </summary> 
+    /// </summary>
     public bool IsAlive => Health != null && Health.IsAlive;
 
     /// <summary>
@@ -142,10 +143,8 @@ public class Sheep : MonoBehaviour, IDayNightListener
     /// </summary>
     public bool IsTamed => _isTamed;
 
-
     private void Awake()
     {
-
         Health = GetComponent<SheepHealth>();
         Hunger = GetComponent<SheepHunger>();
         Sense = GetComponent<SheepSense>();
@@ -193,12 +192,10 @@ public class Sheep : MonoBehaviour, IDayNightListener
             Hunger.OnStarving -= HandleStarving;
     }
 
-
     private void Update()
     {
         FSM.Tick();
         HandleHerdMovementTransition();
-
     }
 
     /// <summary>
@@ -253,8 +250,6 @@ public class Sheep : MonoBehaviour, IDayNightListener
         FSM.ChangeState<RegroupState>();
     }
 
-
-
     /// <summary>
     /// Creates and registers all available sheep states once so they can be reused by the FSM.
     /// </summary>
@@ -288,7 +283,6 @@ public class Sheep : MonoBehaviour, IDayNightListener
         FSM.ChangeState<DeadState>();
         transform.position = _graveyardPosition.position;
         _visualRoot.enabled = true;
-
     }
 
     /// <summary>
@@ -349,7 +343,6 @@ public class Sheep : MonoBehaviour, IDayNightListener
     private void HandleStarving(DamageType damageType)
     {
         Health.TakeDamage(Hunger.StarvationDamage, damageType);
-
     }
 
     /// <summary>

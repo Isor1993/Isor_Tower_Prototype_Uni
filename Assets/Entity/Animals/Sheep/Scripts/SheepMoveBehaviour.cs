@@ -48,7 +48,6 @@ public class SheepMoveBehaviour : MonoBehaviour
     [Range(1, 1000)]
     [SerializeField] private int _maxSearchTries = 100;
 
-
     [Header("Movement Settings")]
     [Tooltip("Movement speed used for normal walking behavior.")]
     [Range(1, 1000)]
@@ -61,7 +60,6 @@ public class SheepMoveBehaviour : MonoBehaviour
     [Tooltip("Angular speed used for normal walking behavior.")]
     [Range(1, 1000)]
     [SerializeField] private float _walkAngularSpeed = 120f;
-
 
     [Header("Flee Movement Settings")]
     [Tooltip("Movement speed used while fleeing from a threat.")]
@@ -86,7 +84,6 @@ public class SheepMoveBehaviour : MonoBehaviour
     [Range(0f, 20f)]
     [SerializeField] private float _behindOffset = 4f;
 
-
     private NavMeshAgent _agent;
     private NavMeshPath _fleePath;
     private NavMeshPath _validPath;
@@ -105,7 +102,6 @@ public class SheepMoveBehaviour : MonoBehaviour
         {
             _maxFleeDistance = _minFleeDistance + 1;
         }
-
     }
 
     /// <summary>
@@ -167,7 +163,6 @@ public class SheepMoveBehaviour : MonoBehaviour
             _lookRotationSpeed * Time.deltaTime
         );
     }
-
 
     /// <summary>
     /// Checks whether the sheep has reached its current NavMesh destination.
@@ -274,7 +269,6 @@ public class SheepMoveBehaviour : MonoBehaviour
                 continue;
 
             return hit.position;
-
         }
         return transform.position;
     }

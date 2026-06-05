@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -23,7 +24,6 @@ public class HerdMovingState : SheepStateBase
 {
     public HerdMovingState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
-
     }
 
     /// <summary>

@@ -13,9 +13,9 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using System;
 using UnityEngine;
-
 
 /// <summary>
 /// Controls the hunger values of a sheep and notifies other systems when the sheep starts starving.
@@ -101,6 +101,7 @@ public class SheepHunger : MonoBehaviour
     {
         SetBaseValues();
     }
+
     private void OnEnable()
     {
         RestoreHunger();
@@ -146,15 +147,13 @@ public class SheepHunger : MonoBehaviour
 
         if (!_isHungerActive)
             return;
-        
-            ApplyHungerTick();
 
-            if (IsStarving)
-            {
-                OnStarving?.Invoke(DamageType.Starvation);
-            }
+        ApplyHungerTick();
 
-        
+        if (IsStarving)
+        {
+            OnStarving?.Invoke(DamageType.Starvation);
+        }
     }
 
     /// <summary>

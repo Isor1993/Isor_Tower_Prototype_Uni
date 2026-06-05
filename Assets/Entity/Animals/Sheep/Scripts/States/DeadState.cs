@@ -12,6 +12,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -55,6 +56,5 @@ public class DeadState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-
     }
 }

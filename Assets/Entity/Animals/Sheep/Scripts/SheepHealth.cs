@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using System;
 using UnityEngine;
 
@@ -65,7 +66,6 @@ public class SheepHealth : MonoBehaviour, IDamageable
 
     private bool _hasDied;
 
-
     private void Awake()
     {
         SetBaseValues();
@@ -79,7 +79,6 @@ public class SheepHealth : MonoBehaviour, IDamageable
             _currentHealth = 0;
             Die();
         }
-
     }
 
     /// <summary>

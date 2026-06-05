@@ -14,6 +14,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -21,7 +22,6 @@ using UnityEngine;
 /// </summary>
 public class PatrolState : SheepStateBase, IResumeTargetState
 {
-
     private bool _hasResumeTarget;
     private Vector3 _resumeTarget;
 
@@ -127,9 +127,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
     /// </summary>
     public override void Exit()
     {
-
     }
-
 
     /// <summary>
     /// Requests a random patrol position from the herd manager, validates it on the NavMesh,
@@ -146,7 +144,7 @@ public class PatrolState : SheepStateBase, IResumeTargetState
 #endif
             return;
         }
-       
+
         Sheep.Move.MoveTo(validPos);
     }
 

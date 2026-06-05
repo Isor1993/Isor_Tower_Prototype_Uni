@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -27,7 +28,6 @@ public class DodgeState : SheepStateBase
 
     public DodgeState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
-
     }
 
     /// <summary>
@@ -114,7 +114,6 @@ public class DodgeState : SheepStateBase
         {
             resumeState.ResumeTarget(_previousTarget);
         }
-
 
         ChangeBackToReturnState();
     }

@@ -14,6 +14,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using System;
 using UnityEngine;
 
@@ -50,7 +51,6 @@ public class SheepSense : MonoBehaviour
     [Tooltip("Distance at which the player is close enough to tame the sheep.")]
     [SerializeField] private float _distanceForTamingSheep;
 
-
     [Tooltip("Gizmo color used for threat detection visualization.")]
     [SerializeField] private Color _colorThreat;
 
@@ -62,7 +62,6 @@ public class SheepSense : MonoBehaviour
 
     [Tooltip("Gizmo color used for commander detection visualization.")]
     [SerializeField] private Color _colorCommander;
-
 
     [Header("Local Overrides (only if enabled)")]
     [Tooltip("Local detection radius for threats. Used only when local overrides are enabled."), Range(1, 200)]
@@ -76,7 +75,6 @@ public class SheepSense : MonoBehaviour
 
     [Tooltip("Local detection radius for commander. Used only when local overrides are enabled."), Range(1, 200)]
     [SerializeField] private float _commanderRadius;
-
 
     [Tooltip("Local layer mask used to detect threats. Used only when local overrides are enabled.")]
     [SerializeField] private LayerMask _threatLayer;
@@ -365,13 +363,13 @@ public class SheepSense : MonoBehaviour
         if (_showDetectionRangeWires)
         {
             ShowDetectionAreaOnGizmos();
-
         }
         if (_showClosestDetectionLine)
         {
             ShowClosestDetectionOnGizmos(currentThreatPosition, currentSheepPosition, currentPlayerPosition, currentCommanderPosition);
         }
     }
+
     private void OnDrawGizmos()
     {
         if (_settings == null)
@@ -390,7 +388,6 @@ public class SheepSense : MonoBehaviour
         {
             ShowClosestDetectionOnGizmos(currentThreatPosition, currentSheepPosition, currentPlayerPosition, currentCommanderPosition);
         }
-
     }
 
     /// <summary>
@@ -442,5 +439,6 @@ public class SheepSense : MonoBehaviour
     {
         return target != null ? target.position : transform.position;
     }
+
 #endif
 }

@@ -13,7 +13,6 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
-using UnityEngine;
 
 /// <summary>
 /// Base class for all sheep finite state machine states.
@@ -35,15 +34,18 @@ public abstract class SheepStateBase
     /// <summary>
     /// Called when the state becomes active.
     /// </summary>
-    public virtual void Enter() { }
+    public virtual void Enter()
+    { }
 
     /// <summary>
     /// Called every frame while the state is active.
     /// </summary>
-    public virtual void Tick() { }
+    public virtual void Tick()
+    { }
 
     /// <summary>
     /// Called when the state is exited.
     /// </summary>
-    public virtual void Exit() { }
+    public virtual void Exit()
+    { }
 }

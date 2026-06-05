@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -280,6 +281,7 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
     }
 
 #if UNITY_EDITOR
+
     private void OnDrawGizmos()
     {
         if (!_debugGizmosOn)
@@ -319,5 +321,6 @@ public class SheepDodgeBehaviour : DodgeBehaviourBase
         Gizmos.color = _dodgePointColor;
         Gizmos.DrawSphere(_drawPoint, _drawPointSize);
     }
+
 #endif
 }

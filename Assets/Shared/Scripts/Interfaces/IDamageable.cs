@@ -23,5 +23,5 @@ public interface IDamageable
     /// </summary>
     /// <param name="damage">The amount of damage to apply.</param>
     /// <param name="damageType">The type of damage being applied.</param>
-    public void TakeDamage(int damage,  DamageType damageType);
+    public void TakeDamage(int damage, DamageType damageType);
 }

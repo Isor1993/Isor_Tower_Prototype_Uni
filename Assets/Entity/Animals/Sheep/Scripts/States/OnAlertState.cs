@@ -14,6 +14,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -57,7 +58,7 @@ public class OnAlertState : SheepStateBase
         if (_reactionTimer.IsFinished(Settings.ReactionTime))
         {
             _reactionTimer.Reset();
-                     
+
             if (Sheep.Sense.HasThreat)
             {
                 EnterFleeState(Sheep.Sense.CurrentThreat);
@@ -88,7 +89,6 @@ public class OnAlertState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-
     }
 
     /// <summary>

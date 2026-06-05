@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 /// <summary>
 /// Manages herd-level data and positioning logic for a group of sheep.
 /// </summary>
@@ -26,28 +25,34 @@ public class HerdManager : MonoBehaviour
     [Header("Herd Members")]
     [Tooltip("The sheep that leads this herd.")]
     [SerializeField] private Sheep _commander;
+
     [Tooltip("All sheep that belong to this herd.")]
     [SerializeField] private List<Sheep> _herdPool = new List<Sheep>();
 
     [Tooltip("Formation offsets used to position normal sheep around the herd anchor.")]
     [SerializeField] private Vector3[] _slotOffsets;
+
     [Tooltip("Radius around the herd anchor used for random regroup positions."), Range(1f, 100f)]
     [SerializeField] private float _regroupRadius;
+
     [Tooltip("Radius around the herd anchor used for random patrol positions."), Range(1f, 100f)]
     [SerializeField] private float _patrolRadius;
+
     [Tooltip("Radius around the herd anchor used for random spawn or respawn positions."), Range(1f, 100f)]
     [SerializeField] private float _spawnRadius;
 
     [Header("Gizmo Settings")]
     [Tooltip("If enabled, draws herd radius gizmos in the Scene view.")]
     [SerializeField] private bool _showGizmo = false;
+
     [Tooltip("Gizmo color used for the patrol radius visualization.")]
     [SerializeField] private Color _patrolRadiusColor;
+
     [Tooltip("Gizmo color used for the regroup radius visualization.")]
     [SerializeField] private Color _regroupRadiusColor;
+
     [Tooltip("Gizmo color used for the spawn radius visualization.")]
     [SerializeField] private Color _spawnRadiusColor;
-
 
     /// <summary>
     /// Indicates whether this herd has an assigned commander and whether that commander is alive.
@@ -61,12 +66,9 @@ public class HerdManager : MonoBehaviour
 
     private Vector3 _lastHerdAnchorPosition;
 
-
     private void Start()
     {
         ValidateHerd();
-
-
     }
 
     /// <summary>
@@ -160,7 +162,6 @@ public class HerdManager : MonoBehaviour
     public Vector3 GetRandomPatrolPosition()
     {
         return GetRandomPositionInRadius(_patrolRadius);
-
     }
 
     /// <summary>
@@ -170,7 +171,6 @@ public class HerdManager : MonoBehaviour
     public Vector3 GetRandomSpawnPosition()
     {
         return GetRandomPositionInRadius(_spawnRadius);
-
     }
 
     /// <summary>
@@ -390,7 +390,7 @@ public class HerdManager : MonoBehaviour
         }
     }
 
-#if(UNITY_EDITOR)    
+#if(UNITY_EDITOR)
 
     /// <summary>
     /// Draws herd-related radius gizmos in the Scene view.
@@ -411,5 +411,6 @@ public class HerdManager : MonoBehaviour
             Gizmos.DrawWireSphere(anchor, _regroupRadius);
         }
     }
+
 #endif
 }

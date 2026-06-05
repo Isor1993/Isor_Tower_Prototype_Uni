@@ -14,6 +14,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -24,10 +25,8 @@ public class IdleState : SheepStateBase
 {
     private readonly Timer _timer = new Timer();
 
-
     public IdleState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
-
     }
 
     /// <summary>
@@ -52,7 +51,6 @@ public class IdleState : SheepStateBase
 
         if (Sheep.Sense.HasThreat)
         {
-
             FSM.ChangeState<OnAlertState>();
             return;
         }
@@ -71,7 +69,6 @@ public class IdleState : SheepStateBase
             FSM.ChangeState<RegroupState>();
             return;
         }
-
     }
 
     /// <summary>
@@ -79,6 +76,5 @@ public class IdleState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-
     }
 }

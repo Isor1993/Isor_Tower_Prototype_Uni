@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
@@ -24,9 +25,9 @@ public class FollowPlayerState : SheepStateBase
     private bool _isHerdMovingActivated;
     private float _followDistanceAgent = 0f;
     private float _defaultValue = 2f;
+
     public FollowPlayerState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
-
     }
 
     /// <summary>
@@ -38,7 +39,7 @@ public class FollowPlayerState : SheepStateBase
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FollowPlayerState)}");
 #endif
         _isHerdMovingActivated = false;
-        Sheep.Move.SetAgentStopDistance( _followDistanceAgent );
+        Sheep.Move.SetAgentStopDistance(_followDistanceAgent);
     }
 
     /// <summary>
@@ -49,7 +50,7 @@ public class FollowPlayerState : SheepStateBase
     /// </summary>
     public override void Tick()
     {
-        if(Sheep.Move.HasReachedDestination())
+        if (Sheep.Move.HasReachedDestination())
         {
             Sheep.Move.RotateTowardsTarget(Sheep.Sense.CurrentPlayer);
         }
@@ -64,7 +65,7 @@ public class FollowPlayerState : SheepStateBase
             return;
         }
 
-        if(Sheep.Dodge.ShouldDodge)
+        if (Sheep.Dodge.ShouldDodge)
         {
             DodgeState dodgeState = FSM.GetState<DodgeState>();
 
@@ -79,7 +80,6 @@ public class FollowPlayerState : SheepStateBase
             dodgeState.SetReturnState(FSM.CurrentState);
             FSM.ChangeState<DodgeState>();
             return;
-
         }
 
         if (!Sheep.Sense.HasPlayerInRange)
@@ -109,6 +109,4 @@ public class FollowPlayerState : SheepStateBase
             _isHerdMovingActivated = false;
         }
     }
-
-    
 }

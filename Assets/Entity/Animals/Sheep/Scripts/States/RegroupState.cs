@@ -13,12 +13,13 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 
 /// <summary>
 /// State in which the sheep moves back toward the herd or into its assigned herd formation position.
 /// </summary>
-public class RegroupState : SheepStateBase,IResumeTargetState
+public class RegroupState : SheepStateBase, IResumeTargetState
 {
     private const int MAX_TRIES = 100;
 
@@ -127,7 +128,6 @@ public class RegroupState : SheepStateBase,IResumeTargetState
     /// </summary>
     public override void Exit()
     {
-
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ public class RegroupState : SheepStateBase,IResumeTargetState
     /// </summary>
     /// <returns>True if a valid formation target was found and assigned; otherwise false.</returns>
     private bool TrySetFormationTarget()
-    {      
+    {
         _targetPos = Sheep.HerdManager.GetFormationPositionForSheep(Sheep);
 
         if (!Sheep.Move.TryGetValidTargetPosition(_targetPos, out Vector3 validPosition))
@@ -164,7 +164,7 @@ public class RegroupState : SheepStateBase,IResumeTargetState
     /// </summary>
     /// <returns>True if a valid regroup target was found and assigned; otherwise false.</returns>
     private bool TrySetRandomRegroupTarget()
-    {      
+    {
         for (int i = 0; i < MAX_TRIES; i++)
         {
             _targetPos = Sheep.HerdManager.GetRandomRegroupPosition();
