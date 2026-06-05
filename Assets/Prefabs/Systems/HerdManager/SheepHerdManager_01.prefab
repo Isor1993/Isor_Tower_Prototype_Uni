@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8525796641971897257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2525240379713245492}
+  - component: {fileID: 494101893574677812}
+  m_Layer: 0
+  m_Name: SheepHerdManager_01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2525240379713245492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8525796641971897257}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20.65, y: -0.99999, z: 6.49}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &494101893574677812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8525796641971897257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e20945b90346384db6f958925c86021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HerdManager
+  _commander: {fileID: 0}
+  _herdPool:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _slotOffsets:
+  - {x: 2, y: 0, z: -2}
+  - {x: -2, y: 0, z: -2}
+  - {x: 2, y: 0, z: -5}
+  - {x: -2, y: 0, z: -5}
+  - {x: 2, y: 0, z: -7}
+  - {x: -2, y: 0, z: -7}
+  - {x: 2, y: 0, z: -10}
+  - {x: -2, y: 0, z: -10}
+  _regroupRadius: 6
+  _patrolRadius: 17.1
+  _spawnRadius: 12.8
+  _showGizmo: 0
+  _patrolRadiusColor: {r: 0, g: 1, b: 0.95253116, a: 1}
+  _regroupRadiusColor: {r: 0, g: 0.22587335, b: 1, a: 1}
+  _spawnRadiusColor: {r: 0.9151, g: 0.9622642, b: 0.2901961, a: 1}

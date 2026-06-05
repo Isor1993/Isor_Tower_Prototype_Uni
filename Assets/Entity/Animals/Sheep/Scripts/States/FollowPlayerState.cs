@@ -53,6 +53,7 @@ public class FollowPlayerState : SheepStateBase
     {
         if (Sheep.Move.HasReachedDestination())
         {
+            Sheep.Animator.SetBool("Move", false);
             Sheep.Move.RotateTowardsTarget(Sheep.Sense.CurrentPlayer);
         }
         if (!Sheep.IsTamed)
@@ -87,11 +88,14 @@ public class FollowPlayerState : SheepStateBase
             return;
 
         Sheep.Move.FollowBehind(Sheep.Sense.CurrentPlayer);
+        Sheep.Animator.SetBool("Move", true);
 
         if (Sheep.Move.HasReachedDestination() && !_isHerdMovingActivated)
         {
+            Sheep.Animator.SetBool("Move", false);
             if (Sheep.IsCommander)
             {
+               
                 Sheep.HerdManager.SetAllSheepHerdMoving(true);
                 _isHerdMovingActivated = true;
             }
