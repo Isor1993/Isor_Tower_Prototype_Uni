@@ -59,9 +59,7 @@ public class HerdManager : MonoBehaviour
     /// </summary>
     public bool HasCommander => _commander != null;
 
-
     private Vector3 _lastHerdAnchorPosition;
-
 
 
     private void Start()
@@ -73,13 +71,13 @@ public class HerdManager : MonoBehaviour
 
     /// <summary>
     /// Gets the current anchor position of the herd.
-    /// Uses the commander position when the commander is alive, otherwise uses the herd center
+    /// Uses the commander position when the commander is alive and tamed, otherwise uses the herd center
     /// of all living sheep. If no sheep are alive, the last known anchor position is returned.
     /// </summary>
     /// <returns>The current or last known herd anchor position.</returns>
     public Vector3 GetHerdAnchorPosition()
     {
-        if (_commander.IsTamed && IsCommanderAlive)
+        if (_commander != null && _commander.IsAlive && _commander.IsTamed)
         {
             return _lastHerdAnchorPosition = _commander.transform.position;
         }
@@ -113,13 +111,17 @@ public class HerdManager : MonoBehaviour
 
         if (aliveIndex < 0)
         {
+#if UNITY_EDITOR
             Debug.LogError($"{name}: Sheep is not an alive member of this herd.");
+#endif
             return anchor;
         }
 
         if (_slotOffsets == null || _slotOffsets.Length == 0)
         {
+#if UNITY_EDITOR
             Debug.LogError($"{name}: No slot offsets assigned.");
+#endif
             return anchor;
         }
 
@@ -127,7 +129,9 @@ public class HerdManager : MonoBehaviour
 
         if (slotIndex >= _slotOffsets.Length)
         {
+#if UNITY_EDITOR
             Debug.LogError($"{name}: Slot index is outside of the slot offset array.");
+#endif
             return anchor;
         }
         Vector3 offset = _slotOffsets[slotIndex];
@@ -139,8 +143,6 @@ public class HerdManager : MonoBehaviour
         Vector3 targetPosition = anchor + offset;
         return targetPosition;
     }
-
-
 
     /// <summary>
     /// Gets a random regroup position around the current herd anchor.
@@ -172,21 +174,25 @@ public class HerdManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Checks whether the given sheep is a herd member and has reached its current movement destination.
     /// </summary>
-    /// <param name="Object"></param>
-    /// <returns></returns>
+    /// <param name="sheep">The sheep to check.</param>
+    /// <returns>True if the sheep belongs to this herd and has reached its destination; otherwise false.</returns>
     public bool IsSheepInPosition(Sheep sheep)
     {
         if (!IsHerdMember(sheep))
         {
+#if UNITY_EDITOR
             Debug.LogError($"{name}: Sheep {sheep?.name} is not part of this herd.");
+#endif
             return false;
         }
 
         if (sheep.Move == null)
         {
+#if UNITY_EDITOR
             Debug.LogError($"{name}: Sheep {sheep.name} has no Move behaviour.");
+#endif
             return false;
         }
 
@@ -282,18 +288,24 @@ public class HerdManager : MonoBehaviour
     {
         if (_commander == null)
         {
+#if UNITY_EDITOR
             Debug.LogWarning($"{name}: No commander assigned.");
+#endif
         }
         else
         {
             if (!_commander.IsCommander)
             {
-                Debug.LogWarning($"{name}: Assigned commander {_commander.name} is not marked as commander or is null.");
+#if UNITY_EDITOR
+                Debug.LogWarning($"{name}: Assigned commander {_commander.name} is not marked as commander.");
+#endif
             }
 
             if (!_herdPool.Contains(_commander))
             {
+#if UNITY_EDITOR
                 Debug.LogWarning($"{name}: Commander {_commander.name} is not part of the herd pool.");
+#endif
             }
         }
 
@@ -301,7 +313,9 @@ public class HerdManager : MonoBehaviour
         {
             if (_herdPool[i] == null)
             {
+#if UNITY_EDITOR
                 Debug.LogWarning($"{name}: Herd pool contains an empty slot at index {i}.");
+#endif
             }
         }
     }
@@ -361,10 +375,10 @@ public class HerdManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Sets the herd movement flag for all non-commander sheep in the herd.
     /// </summary>
-    /// <param name="isHerdmoving"></param>
-    public void SetAllSheepHerdMoving(bool isHerdmoving)
+    /// <param name="isHerdMoving">Whether normal sheep should move as part of herd movement.</param>
+    public void SetAllSheepHerdMoving(bool isHerdMoving)
     {
         foreach (Sheep sheep in _herdPool)
         {
@@ -372,7 +386,7 @@ public class HerdManager : MonoBehaviour
                 continue;
             if (sheep.IsCommander)
                 continue;
-            sheep.IsHerdMoving = isHerdmoving;
+            sheep.IsHerdMoving = isHerdMoving;
         }
     }
 

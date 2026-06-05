@@ -20,20 +20,21 @@ using UnityEngine;
 /// Controls the health values of a sheep and provides damage, healing,
 /// full restoration, and death notification functionality.
 /// </summary>
-public class SheepHealth : MonoBehaviour,IDamagable
+public class SheepHealth : MonoBehaviour, IDamageable
 {
     [Tooltip("ScriptableObject that contains the base health configuration for this sheep.")]
-    [SerializeField] SheepSettings settings;
+    [SerializeField] private SheepSettings _settings;
 
-    [Tooltip("Maximum health value this sheep can have."),Range(1,100)]
+    [Tooltip("Maximum health value this sheep can have.")]
+    [Range(1, 100)]
     [SerializeField] private int _maxHealth;
 
     [Tooltip("Current health value of this sheep.")]
     [SerializeField] private int _currentHealth;
 
-    [Tooltip("Funktion like a button ti kill sheep.")]
-    [SerializeField] private bool _killSheep=false;
-    
+    [Header("Testing Settings")]
+    [Tooltip("If enabled, kills the sheep once during play mode. Used for testing.")]
+    [SerializeField] private bool _killSheep = false;
 
     /// <summary>
     /// Raised once when the sheep's health reaches zero.
@@ -44,7 +45,7 @@ public class SheepHealth : MonoBehaviour,IDamagable
     /// Raised whenever the sheep receives valid damage.
     /// Provides the applied damage amount and the damage type.
     /// </summary>
-    public event Action<int,DamageType> OnDamaged;
+    public event Action<int, DamageType> OnDamaged;
 
     /// <summary>
     /// Gets the current health value of the sheep.
@@ -62,6 +63,9 @@ public class SheepHealth : MonoBehaviour,IDamagable
     /// </summary>
     public bool IsAlive => _currentHealth > 0;
 
+    private bool _hasDied;
+
+
     private void Awake()
     {
         SetBaseValues();
@@ -69,28 +73,13 @@ public class SheepHealth : MonoBehaviour,IDamagable
 
     private void Update()
     {
-       if(_killSheep)
+        if (_killSheep)
         {
             _killSheep = false;
             _currentHealth = 0;
-            Die();           
+            Die();
         }
 
-    }
-
-    /// <summary>
-    /// Loads the initial health configuration from the SheepSettings ScriptableObject.
-    /// Sets maximum health and initializes current health.
-    /// </summary>
-    private void SetBaseValues()
-    {
-        if(settings==null)
-        {
-            Debug.LogError($"{name}: No SheepSettings assigned.");
-            return;
-        }
-        _maxHealth = settings.MaxHealth;        
-        _currentHealth = _maxHealth;
     }
 
     /// <summary>
@@ -108,7 +97,7 @@ public class SheepHealth : MonoBehaviour,IDamagable
             return;
 
         _currentHealth -= damage;
-        OnDamaged?.Invoke(damage,damageType);
+        OnDamaged?.Invoke(damage, damageType);
 
         if (_currentHealth <= 0)
         {
@@ -131,27 +120,44 @@ public class SheepHealth : MonoBehaviour,IDamagable
 
         _currentHealth += heal;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
-
-        if (_currentHealth > _maxHealth)
-        {
-            _currentHealth = _maxHealth;
-        }
     }
 
     /// <summary>
-    /// Restores the sheep's current health value to its maximum health value.
+    /// Restores the sheep's current health value to its maximum health value
+    /// and allows future death events to be raised again.
     /// </summary>
     public void RestoreFullHealth()
     {
+        _hasDied = false;
         _currentHealth = _maxHealth;
     }
 
     /// <summary>
-    /// Invokes the death event to notify subscribed systems that this sheep has died.
+    /// Invokes the death event once to notify subscribed systems that this sheep has died.
     /// </summary>
     private void Die()
     {
-        
+        if (_hasDied)
+            return;
+        _hasDied = true;
         OnDied?.Invoke();
-    }    
+    }
+
+    /// <summary>
+    /// Loads the initial health configuration from the SheepSettings ScriptableObject.
+    /// Sets maximum health and initializes current health.
+    /// </summary>
+    private void SetBaseValues()
+    {
+        if (_settings == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"{name}: No SheepSettings assigned.");
+#endif
+            return;
+        }
+        _maxHealth = _settings.MaxHealth;
+        _currentHealth = _maxHealth;
+        _hasDied = false;
+    }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class SheepSettings : ScriptableObject
 {
     [Header("General")]
-    [SerializeField] private SheepTyp _typ;
+    [SerializeField] private SheepType _typ;
 
     [Header("Health")]
     [SerializeField] private int _maxHealth = 100;
@@ -52,7 +52,7 @@ public class SheepSettings : ScriptableObject
     [SerializeField] private Color _colorCommander = Color.yellow;
 
     // ===== GENERAL =====
-    public SheepTyp Typ => _typ;
+    public SheepType Typ => _typ;
 
     // ===== HEALTH =====
     public int MaxHealth => _maxHealth;

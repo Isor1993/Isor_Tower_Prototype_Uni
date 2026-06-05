@@ -25,7 +25,7 @@ public class OnAlertState : SheepStateBase
     private readonly Timer _alertTimer = new Timer();
     private readonly Timer _reactionTimer = new Timer();
 
-    public OnAlertState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+    public OnAlertState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
     }
 
@@ -34,7 +34,9 @@ public class OnAlertState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
+#if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(OnAlertState)}");
+#endif
 
         _alertTimer.Reset();
         _reactionTimer.Reset();
@@ -51,34 +53,34 @@ public class OnAlertState : SheepStateBase
     {
         _alertTimer.Tick(Time.deltaTime);
         _reactionTimer.Tick(Time.deltaTime);
-       
+
         if (_reactionTimer.IsFinished(Settings.ReactionTime))
         {
             _reactionTimer.Reset();
-
+                     
             if (Sheep.Sense.HasThreat)
             {
-                FSM.ChangeState(new FleeState(Sheep, FSM, Sheep.Sense.CurrentThreat));
+                EnterFleeState(Sheep.Sense.CurrentThreat);
                 return;
             }
-            
+
             if (Sheep.Sense.HasPlayerInRange && Sheep.IsTamed)
             {
-            FSM.ChangeState(new FollowPlayerState(Sheep, FSM));
-            return;
+                FSM.ChangeState<FollowPlayerState>();
+                return;
             }
-            
+
             if (Sheep.Sense.IsPlayerTooClose)
             {
-            FSM.ChangeState(new FleeState(Sheep, FSM, Sheep.Sense.CurrentPlayer));
-            return;
+                EnterFleeState(Sheep.Sense.CurrentPlayer);
+                return;
             }
         }
-       
+
         if (!_alertTimer.IsFinished(Settings.AlertTime))
             return;
 
-        FSM.ChangeState(new PatrolState(Sheep, FSM));
+        FSM.ChangeState<PatrolState>();
     }
 
     /// <summary>
@@ -87,5 +89,27 @@ public class OnAlertState : SheepStateBase
     public override void Exit()
     {
 
+    }
+
+    /// <summary>
+    /// Configures the flee state with the given threat and changes into it.
+    /// If no valid threat is available or the flee state is not registered,
+    /// the transition is skipped.
+    /// </summary>
+    /// <param name="threat">The transform the sheep should flee from.</param>
+    private void EnterFleeState(Transform threat)
+    {
+        FleeState fleeState = FSM.GetState<FleeState>();
+
+        if (fleeState == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"{Sheep.name}: Cannot enter FleeState because it is not registered in the FSM.");
+#endif
+            return;
+        }
+
+        fleeState.SetThreat(threat);
+        FSM.ChangeState<FleeState>();
     }
 }

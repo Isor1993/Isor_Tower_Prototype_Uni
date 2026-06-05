@@ -21,19 +21,24 @@ using UnityEngine;
 /// </summary>
 public class FollowPlayerState : SheepStateBase
 {
-    private bool _isHerdmovingActivated ;
-    public FollowPlayerState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+    private bool _isHerdMovingActivated;
+    private float _followDistanceAgent = 0f;
+    private float _defaultValue = 2f;
+    public FollowPlayerState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
 
     }
 
     /// <summary>
-    /// Enters the follow-player state and marks the herd as moving if this sheep is the commander.
+    /// Enters the follow-player state and resets the herd movement activation flag.
     /// </summary>
     public override void Enter()
     {
+#if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FollowPlayerState)}");
-      _isHerdmovingActivated = false;
+#endif
+        _isHerdMovingActivated = false;
+        Sheep.Move.SetAgentStopDistance( _followDistanceAgent );
     }
 
     /// <summary>
@@ -44,29 +49,52 @@ public class FollowPlayerState : SheepStateBase
     /// </summary>
     public override void Tick()
     {
+        if(Sheep.Move.HasReachedDestination())
+        {
+            Sheep.Move.RotateTowardsTarget(Sheep.Sense.CurrentPlayer);
+        }
         if (!Sheep.IsTamed)
         {
-            FSM.ChangeState(new RegroupState(Sheep, FSM));
+            FSM.ChangeState<RegroupState>();
             return;
         }
         if (Sheep.Sense.CurrentPlayer == null)
         {
-            FSM.ChangeState(new RegroupState(Sheep, FSM));
+            FSM.ChangeState<RegroupState>();
             return;
         }
+
+        if(Sheep.Dodge.ShouldDodge)
+        {
+            DodgeState dodgeState = FSM.GetState<DodgeState>();
+
+            if (dodgeState == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"{Sheep.name}: Cannot enter DodgeState because it is not registered in the FSM.");
+#endif
+                return;
+            }
+
+            dodgeState.SetReturnState(FSM.CurrentState);
+            FSM.ChangeState<DodgeState>();
+            return;
+
+        }
+
         if (!Sheep.Sense.HasPlayerInRange)
             return;
 
         Sheep.Move.FollowBehind(Sheep.Sense.CurrentPlayer);
-        if(Sheep.Move.HasReachedDestination()&&!_isHerdmovingActivated)
+
+        if (Sheep.Move.HasReachedDestination() && !_isHerdMovingActivated)
         {
             if (Sheep.IsCommander)
             {
                 Sheep.HerdManager.SetAllSheepHerdMoving(true);
-                _isHerdmovingActivated = true;
+                _isHerdMovingActivated = true;
             }
         }
-
     }
 
     /// <summary>
@@ -74,10 +102,13 @@ public class FollowPlayerState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
+        Sheep.Move.SetAgentStopDistance(_defaultValue);
         if (Sheep.IsCommander)
         {
             Sheep.HerdManager.SetAllSheepHerdMoving(false);
-            _isHerdmovingActivated = false;
+            _isHerdMovingActivated = false;
         }
     }
+
+    
 }

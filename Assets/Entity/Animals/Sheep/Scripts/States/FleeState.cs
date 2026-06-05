@@ -16,65 +16,80 @@
 using UnityEngine;
 
 /// <summary>
-/// State in which the sheep flees from a given threat transform and updates
+/// State in which the sheep flees from a configured threat transform and updates
 /// its flee destination at configured intervals.
 /// </summary>
 public class FleeState : SheepStateBase
 {
-    private readonly Transform _threat;
-    private readonly Timer _updateTimer = new Timer();   
-    public FleeState(Sheep sheep, SheepFSM fSM,Transform threat) : base(sheep, fSM)
+    private readonly Timer _updateTimer = new Timer();
+
+    private Transform _threat;
+
+    public FleeState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
-        _threat = threat;   
+    }
+
+    /// <summary>
+    /// Sets the threat transform this sheep should flee from.
+    /// Must be called before entering the flee state.
+    /// </summary>
+    /// <param name="threat">The threat transform the sheep should flee from.</param>
+    public void SetThreat(Transform threat)
+    {
+        _threat = threat;
     }
 
     /// <summary>
     /// Enters the flee state, switches the sheep to flee movement settings,
-    /// and starts moving away from the current threat position.
+    /// and starts moving away from the configured threat position.
     /// </summary>
     public override void Enter()
     {
+#if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(FleeState)}");
+#endif
 
         _updateTimer.Reset();
 
         Sheep.Move.SetFleeMovement();
 
-        if (_threat != null)
+        if (_threat == null)
         {
-            Sheep.Move.FleeFrom(_threat.position);
+            FSM.ChangeState<RegroupState>();
+            return;
         }
+
+        Sheep.Move.FleeFrom(_threat.position);
     }
 
     /// <summary>
     /// Updates the flee behavior.
     /// If the threat is missing or no longer detected after reaching the destination,
     /// the sheep returns to regroup behavior. Otherwise, the flee target is recalculated
-    /// at the configured update interval.
+    /// at the configured update interval after reaching its current flee destination.
     /// </summary>
     public override void Tick()
     {
-       
-        if (_threat==null)
+        if (_threat == null)
         {
-            Sheep.FSM.ChangeState(new RegroupState(Sheep, FSM));
+            FSM.ChangeState<RegroupState>();
             return;
         }
 
-        if (Sheep.Move.HasReachedDestination()&& !Sheep.Sense.HasThreat)
+        if (Sheep.Move.HasReachedDestination() && !Sheep.Sense.HasThreat)
         {
-            Sheep.FSM.ChangeState(new RegroupState(Sheep, FSM));
+            FSM.ChangeState<RegroupState>();
             return;
         }
+
         _updateTimer.Tick(Time.deltaTime);
 
-        if (_updateTimer.IsFinished(Settings.UpdateTickNewPosition)&& Sheep.Move.HasReachedDestination())
-        {           
+        if (_updateTimer.IsFinished(Settings.UpdateTickNewPosition) &&
+            Sheep.Move.HasReachedDestination())
+        {
             _updateTimer.Reset();
             Sheep.Move.FleeFrom(_threat.position);
-            return;
         }
-
     }
 
     /// <summary>
@@ -82,6 +97,7 @@ public class FleeState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-     Sheep.Move.SetWalkMovement();
+        Sheep.Move.SetWalkMovement();
+        _threat = null;
     }
 }

@@ -7,7 +7,7 @@
 * Description :
 * Represents the idle behavior state of a sheep.
 * Keeps the sheep waiting for a configured idle duration while continuously
-* checking for threats, nearby players, hunger, and regroup conditions.
+* checking for threats, nearby players, hunger, and the idle timeout.
 * Transitions to alert, eating, or regroup behavior when the corresponding
 * condition is met.
 *
@@ -22,9 +22,10 @@ using UnityEngine;
 /// </summary>
 public class IdleState : SheepStateBase
 {
-    private readonly Timer _timer = new Timer();   
+    private readonly Timer _timer = new Timer();
 
-    public IdleState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+
+    public IdleState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
 
     }
@@ -34,7 +35,9 @@ public class IdleState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
+#if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(IdleState)}");
+#endif
 
         _timer.Reset();
     }
@@ -47,28 +50,28 @@ public class IdleState : SheepStateBase
     {
         _timer.Tick(Time.deltaTime);
 
-         if(Sheep.Sense.HasThreat)
+        if (Sheep.Sense.HasThreat)
         {
 
-            FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            FSM.ChangeState<OnAlertState>();
             return;
-        }        
+        }
         if (Sheep.Sense.HasPlayerInRange)
         {
-            FSM.ChangeState(new OnAlertState(Sheep,FSM));
+            FSM.ChangeState<OnAlertState>();
             return;
         }
         if (Sheep.Hunger.IsHungry)
         {
-            FSM.ChangeState(new EatingState(Sheep, FSM));
+            FSM.ChangeState<EatingState>();
             return;
         }
         if (_timer.IsFinished(Settings.IdleTime))
-        {            
-            FSM.ChangeState(new RegroupState(Sheep, FSM));
+        {
+            FSM.ChangeState<RegroupState>();
             return;
-        }       
-        
+        }
+
     }
 
     /// <summary>
@@ -76,6 +79,6 @@ public class IdleState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-           
+
     }
 }

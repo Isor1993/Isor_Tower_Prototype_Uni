@@ -1,6 +1,6 @@
 /*****************************************************************************
 * Project : Isors Tower Prototype
-* File    : HerdMoving.cs
+* File    : HerdMovingState.cs
 * Date    : 20.02.2026
 * Author  : Eric Rosenberg
 *
@@ -19,9 +19,9 @@ using UnityEngine;
 /// State in which the sheep participates in active herd movement.
 /// The commander follows the player, while normal sheep follow their assigned formation positions.
 /// </summary>
-public class HerdMoving : SheepStateBase
-{ 
-    public HerdMoving(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+public class HerdMovingState : SheepStateBase
+{
+    public HerdMovingState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
 
     }
@@ -31,7 +31,9 @@ public class HerdMoving : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(HerdMoving)}");
+#if UNITY_EDITOR
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(HerdMovingState)}");
+#endif
         if (!Sheep.IsCommander)
         {
             Sheep.Move.SetHerdMovement();
@@ -46,42 +48,42 @@ public class HerdMoving : SheepStateBase
     /// </summary>
     public override void Tick()
     {
-        if(!Sheep.IsTamed&&Sheep.IsCommander)
+        if (!Sheep.IsTamed && Sheep.IsCommander)
         {
-            FSM.ChangeState(new PatrolState(Sheep,FSM));
+            FSM.ChangeState<PatrolState>();
             return;
         }
-        if(!Sheep.IsHerdMoving&&!Sheep.IsCommander)
+        if (!Sheep.IsHerdMoving && !Sheep.IsCommander)
         {
-            FSM.ChangeState(new PatrolState(Sheep, FSM));
+            FSM.ChangeState<PatrolState>();
             return;
         }
         if (Sheep.IsCommander)
         {
             if (Sheep.Sense.CurrentPlayer == null)
             {
-                FSM.ChangeState(new PatrolState(Sheep, FSM));
+                FSM.ChangeState<PatrolState>();
                 return;
             }
+
             Sheep.Move.FollowBehind(Sheep.Sense.CurrentPlayer);
             return;
         }
-        if (!Sheep.IsCommander)
-        {
-            Vector3 newPos = Sheep.HerdManager.GetFormationPositionForSheep(Sheep);
-            if (Sheep.Move.TryGetValidTargetPosition(newPos, out Vector3 validPos))
-            {
-                newPos = validPos;
-            }
-            Sheep.Move.MoveTo(newPos);
-        }
+        Vector3 newPos = Sheep.HerdManager.GetFormationPositionForSheep(Sheep);
+
+        if (!Sheep.Move.TryGetValidTargetPosition(newPos, out Vector3 validPos))
+            return;
+
+        Sheep.Move.MoveTo(validPos);
     }
 
     /// <summary>
-    /// Exits the herd movement state.
+    /// Exits the herd movement state and restores normal walking movement settings
+    /// for non-commander sheep.
     /// </summary>
     public override void Exit()
     {
-        Sheep.Move.SetWalkMovement();
+        if (!Sheep.IsCommander)
+            Sheep.Move.SetWalkMovement();
     }
 }

@@ -13,6 +13,7 @@
 * History :
 * 20.02.2026 ER Created
 ******************************************************************************/
+
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,62 +28,76 @@ public class SheepMoveBehaviour : MonoBehaviour
     [SerializeField] private SheepSettings _settings;
 
     [Header("Flee Position Finding Settings")]
-    [Tooltip("Radius used when sampling nearby NavMesh positions for flee target validation."), Range(1, 4)]
+    [Tooltip("Radius used when sampling nearby NavMesh positions for flee target validation.")]
+    [Range(1, 4)]
     [SerializeField] private float _sampleRadius = 2f;
-    [Tooltip("Minimum distance the sheep should move away when choosing a flee target."), Range(4, 20)]
+
+    [Tooltip("Minimum distance the sheep should move away when choosing a flee target.")]
+    [Range(4, 20)]
     [SerializeField] private float _minFleeDistance = 6f;
-    [Tooltip("Maximum distance the sheep may move away when choosing a flee target."), Range(4, 40)]
+
+    [Tooltip("Maximum distance the sheep may move away when choosing a flee target.")]
+    [Range(4, 40)]
     [SerializeField] private float _maxFleeDistance = 10f;
-    [Tooltip("Maximum sideways offset applied to flee target candidates to avoid fleeing in a perfectly straight line."), Range(1, 20)]
+
+    [Tooltip("Maximum sideways offset applied to flee target candidates to avoid fleeing in a perfectly straight line.")]
+    [Range(1, 20)]
     [SerializeField] private float _fleeDistanceSideOffset = 10f;
-    [Tooltip("Maximum number of random flee target candidates tested before giving up."), Range(1, 1000)]
+
+    [Tooltip("Maximum number of random flee target candidates tested before giving up.")]
+    [Range(1, 1000)]
     [SerializeField] private int _maxSearchTries = 100;
-    [Header("Follow Settings")]
-    [Tooltip("."), Range(-1f, -4f)]
-    [SerializeField] private float _followDistance = -2f;
+
 
     [Header("Movement Settings")]
-    [Tooltip("Movement speed used for normal walking behavior."), Range(1, 1000)]
+    [Tooltip("Movement speed used for normal walking behavior.")]
+    [Range(1, 1000)]
     [SerializeField] private float _walkSpeed = 2f;
-    [Tooltip("Acceleration used for normal walking behavior."), Range(1, 1000)]
+
+    [Tooltip("Acceleration used for normal walking behavior.")]
+    [Range(1, 1000)]
     [SerializeField] private float _walkAcceleration = 4f;
-    [Tooltip("Angular speed used for normal walking behavior."), Range(1, 1000)]
+
+    [Tooltip("Angular speed used for normal walking behavior.")]
+    [Range(1, 1000)]
     [SerializeField] private float _walkAngularSpeed = 120f;
 
+
     [Header("Flee Movement Settings")]
-    [Tooltip("Movement speed used while fleeing from a threat."), Range(1, 1000)]
+    [Tooltip("Movement speed used while fleeing from a threat.")]
+    [Range(1, 1000)]
     [SerializeField] private float _fleeSpeed = 6f;
-    [Tooltip("Acceleration used while fleeing from a threat."), Range(1, 1000)]
+
+    [Tooltip("Acceleration used while fleeing from a threat.")]
+    [Range(1, 1000)]
     [SerializeField] private float _fleeAcceleration = 14f;
-    [Tooltip("Angular speed used while fleeing from a threat."), Range(1, 1000)]
+
+    [Tooltip("Angular speed used while fleeing from a threat.")]
+    [Range(1, 1000)]
     [SerializeField] private float _fleeAngularSpeed = 360f;
 
-    private Sheep _sheep;
+    [Header("Rotation Settings")]
+    [Tooltip("Rotation speed used when the sheep turns toward a target.")]
+    [Range(1f, 720f)]
+    [SerializeField] private float _lookRotationSpeed = 180f;
+
+    [Header("Follow Settings")]
+    [Tooltip("Distance behind the followed target used to calculate the follow position.")]
+    [Range(0f, 20f)]
+    [SerializeField] private float _behindOffset = 4f;
+
+
     private NavMeshAgent _agent;
-    NavMeshPath _fleePath;
-    NavMeshPath _validPath;
-
-
-
-
-
-
-    [SerializeField] private float _blockCheckRadius = 0.8f;
-    [SerializeField] private float _blockCheckDistance = 1.2f;
-    [SerializeField] private LayerMask _sheepLayer;
-      
-
-    
+    private NavMeshPath _fleePath;
+    private NavMeshPath _validPath;
 
     private void Awake()
     {
-
         _agent = GetComponent<NavMeshAgent>();
         _fleePath = new NavMeshPath();
         _validPath = new NavMeshPath();
-        _sheep = GetComponent<Sheep>();
         SetBaseValues();
-    }   
+    }
 
     private void OnValidate()
     {
@@ -101,7 +116,7 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         if (_agent == null || !_agent.enabled)
             return;
-        
+
         _agent.isStopped = false;
         _agent.SetDestination(targetPosition);
     }
@@ -115,24 +130,44 @@ public class SheepMoveBehaviour : MonoBehaviour
             return;
         _agent.isStopped = true;
         _agent.ResetPath();
-    }   
-
+    }
 
     /// <summary>
-    /// Moves the sheep toward the current position of a target transform.
+    /// Moves the sheep toward a position behind the given target transform.
     /// </summary>
-    /// <param name="target">The transform the sheep should follow.</param>
+    /// <param name="target">The transform the sheep should follow behind.</param>
     public void FollowBehind(Transform target)
     {
         if (target == null)
             return;
-        Vector3 localOffset = new Vector3(0f,0f,0f);
-        Vector3 worldOffset = target.rotation * localOffset;
-        Vector3 followPosition = target.position + worldOffset;
-
+        Vector3 followPosition = target.position - target.forward * _behindOffset;
         MoveTo(followPosition);
-        
     }
+
+    /// <summary>
+    /// Smoothly rotates the sheep toward the given target transform.
+    /// </summary>
+    /// <param name="target">The transform the sheep should look at.</param>
+    public void RotateTowardsTarget(Transform target)
+    {
+        if (target == null)
+            return;
+
+        Vector3 direction = target.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude <= 0.001f)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        transform.rotation = Quaternion.RotateTowards(
+            transform.rotation,
+            targetRotation,
+            _lookRotationSpeed * Time.deltaTime
+        );
+    }
+
 
     /// <summary>
     /// Checks whether the sheep has reached its current NavMesh destination.
@@ -144,8 +179,8 @@ public class SheepMoveBehaviour : MonoBehaviour
             return true;
         if (_agent.pathPending)
             return false;
-       if (_agent.remainingDistance > _agent.stoppingDistance)
-          return false;
+        if (_agent.remainingDistance > _agent.stoppingDistance)
+            return false;
 
         return !_agent.hasPath || _agent.velocity.sqrMagnitude <= 0.01f;
     }
@@ -175,6 +210,10 @@ public class SheepMoveBehaviour : MonoBehaviour
         _agent.angularSpeed = _walkAngularSpeed;
         _agent.stoppingDistance = 2f;
     }
+
+    /// <summary>
+    /// Applies movement values used while normal sheep move in herd formation.
+    /// </summary>
     public void SetHerdMovement()
     {
         if (_agent == null || !_agent.enabled)
@@ -184,6 +223,7 @@ public class SheepMoveBehaviour : MonoBehaviour
         _agent.angularSpeed = _walkAngularSpeed;
         _agent.stoppingDistance = 0.2f;
     }
+
     /// <summary>
     /// Applies fleeing movement values to the NavMeshAgent.
     /// </summary>
@@ -272,7 +312,9 @@ public class SheepMoveBehaviour : MonoBehaviour
     {
         if (_settings == null)
         {
+#if (UNITY_EDITOR)
             Debug.LogError($"{name}: No SheepSettings assigned.");
+#endif
             return;
         }
         _minFleeDistance = _settings.MinFleeDistance;
@@ -297,8 +339,6 @@ public class SheepMoveBehaviour : MonoBehaviour
         return fleeDirection;
     }
 
-    
-
     /// <summary>
     /// Creates a random flee candidate position away from the threat with an additional sideways offset.
     /// </summary>
@@ -320,7 +360,15 @@ public class SheepMoveBehaviour : MonoBehaviour
 
         newFleePosition.y = transform.position.y;
 
-        Debug.Log($"Random flee candidate: {newFleePosition}");
         return newFleePosition;
+    }
+
+    /// <summary>
+    /// Sets the NavMeshAgent stopping distance.
+    /// </summary>
+    /// <param name="value">The stopping distance value to apply.</param>
+    public void SetAgentStopDistance(float value)
+    {
+        _agent.stoppingDistance = value;
     }
 }

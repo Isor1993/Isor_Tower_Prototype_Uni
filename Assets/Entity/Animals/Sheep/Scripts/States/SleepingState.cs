@@ -21,9 +21,9 @@ using UnityEngine;
 public class SleepingState : SheepStateBase
 {
     private readonly Timer _updateTimer = new Timer();
-    private float _updateTime=1f;
+    private const float UPDATE_TIME = 1f;
 
-    public SleepingState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+    public SleepingState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
     }
 
@@ -32,9 +32,12 @@ public class SleepingState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(SleepingState)}");       
+#if UNITY_EDITOR
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(SleepingState)}");
+#endif
         _updateTimer.Reset();
         Sheep.Move.StopMoving();
+        Sheep.Hunger.IsHungerActive = false;
     }
 
     /// <summary>
@@ -45,13 +48,13 @@ public class SleepingState : SheepStateBase
     {
         _updateTimer.Tick(Time.deltaTime);
 
-        if (!_updateTimer.IsFinished(_updateTime))
+        if (!_updateTimer.IsFinished(UPDATE_TIME))
             return;
         _updateTimer.Reset();
 
         if (!Sheep.IsAsleep)
         {
-            FSM.ChangeState(new PatrolState(Sheep, FSM));
+            FSM.ChangeState<PatrolState>();
             return;
         }
     }
@@ -61,6 +64,6 @@ public class SleepingState : SheepStateBase
     /// </summary>
     public override void Exit()
     {
-        
+        Sheep.Hunger.IsHungerActive = true;
     }
 }

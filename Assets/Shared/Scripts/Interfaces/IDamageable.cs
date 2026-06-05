@@ -1,6 +1,6 @@
 /*****************************************************************************
 * Project : Isors Tower Prototype
-* File    : IDamagable.cs
+* File    : IDamageable.cs
 * Date    : 20.02.2026
 * Author  : Eric Rosenberg
 *
@@ -16,7 +16,7 @@
 /// <summary>
 /// Provides a contract for objects that can receive typed damage.
 /// </summary>
-public interface IDamagable
+public interface IDamageable
 {
     /// <summary>
     /// Applies damage with a specific damage type to the implementing object.

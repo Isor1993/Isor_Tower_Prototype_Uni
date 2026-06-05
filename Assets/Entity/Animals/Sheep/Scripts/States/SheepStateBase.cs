@@ -1,18 +1,18 @@
 /*****************************************************************************
-*Project : Isors Tower Prototype
+* Project : Isors Tower Prototype
 * File    : SheepStateBase.cs
 * Date    : 20.02.2026
 * Author  : Eric Rosenberg
 *
-*Description :
-*Defines the abstract base class for all sheep FSM states.
+* Description :
+* Defines the abstract base class for all sheep FSM states.
 * Stores shared references to the controlled sheep, the owning finite state
-* machine, and the sheep state settings.Provides virtual lifecycle methods
+* machine, and the sheep state settings. Provides virtual lifecycle methods
 * that derived states can override.
 *
-*History :
-*20.02.2026 ER Created
-* *****************************************************************************/
+* History :
+* 20.02.2026 ER Created
+******************************************************************************/
 using UnityEngine;
 
 /// <summary>
@@ -21,15 +21,14 @@ using UnityEngine;
 /// </summary>
 public abstract class SheepStateBase
 {
+    protected readonly Sheep Sheep;
+    protected readonly SheepFSM FSM;
+    protected readonly SheepStateSettings Settings;
 
-    protected Sheep Sheep;
-    protected SheepFSM FSM;
-    protected SheepStateSettings Settings;
-     
-    protected SheepStateBase(Sheep sheep, SheepFSM fSM)
+    protected SheepStateBase(Sheep sheep, SheepFSM fsm)
     {
         Sheep = sheep;
-        FSM = fSM;
+        FSM = fsm;
         Settings = sheep.StateSettings;
     }
 
@@ -48,4 +47,3 @@ public abstract class SheepStateBase
     /// </summary>
     public virtual void Exit() { }
 }
-

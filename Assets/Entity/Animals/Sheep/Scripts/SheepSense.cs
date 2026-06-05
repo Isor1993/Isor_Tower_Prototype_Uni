@@ -16,6 +16,7 @@
 ******************************************************************************/
 using System;
 using UnityEngine;
+
 /// <summary>
 /// Handles perception for a sheep by detecting nearby threats, sheep, the player,
 /// and commander sheep within configurable detection ranges.
@@ -23,90 +24,106 @@ using UnityEngine;
 public class SheepSense : MonoBehaviour
 {
     [Tooltip("ScriptableObject that contains the base sensing configuration for this sheep.")]
-    [SerializeField] SheepSettings settings;
+    [SerializeField] private SheepSettings _settings;
 
     [Header("Debug Settings")]
     [Tooltip("If enabled, this component uses the local inspector values instead of the values from SheepSettings.")]
     [SerializeField] private bool _useLocalOverrides = false;
+
     [Header("On selected Gizmos")]
     [Tooltip("Draws lines to the closest detected targets when this GameObject is selected.")]
     [SerializeField] private bool _showClosestDetectionLine = false;
-    [Tooltip("Always draws lines to the closest detected targets in the Scene view.")]
+
+    [Tooltip("Draws detection range wire spheres when this GameObject is selected.")]
     [SerializeField] private bool _showDetectionRangeWires = false;
-    [Header("Permament on Gizmos")]
-    [Tooltip("Always draws detection range wire spheres in the Scene view.")]
+
+    [Header("Permanent on Gizmos")]
+    [Tooltip("Always draws lines to the closest detected targets in the Scene view.")]
     [SerializeField] private bool _showClosestDetectionLinePermanent = false;
+
     [Tooltip("Always draws detection range wire spheres in the Scene view.")]
     [SerializeField] private bool _showDetectionRangeWiresPermanent = false;
+
     [Tooltip("Distance at which the player is considered too close and may scare the sheep.")]
-    [SerializeField] private float _fearDistanceForPlayer;   
+    [SerializeField] private float _fearDistanceForPlayer;
+
     [Tooltip("Distance at which the player is close enough to tame the sheep.")]
     [SerializeField] private float _distanceForTamingSheep;
 
+
     [Tooltip("Gizmo color used for threat detection visualization.")]
     [SerializeField] private Color _colorThreat;
-    [Tooltip("Gizmo color used for sheep  detection visualization.")]
+
+    [Tooltip("Gizmo color used for sheep detection visualization.")]
     [SerializeField] private Color _colorSheep;
-    [Tooltip("Gizmo color used for player  detection visualization.")]
+
+    [Tooltip("Gizmo color used for player detection visualization.")]
     [SerializeField] private Color _colorPlayer;
-    [Tooltip("Gizmo color used for commander  detection visualization.")]
+
+    [Tooltip("Gizmo color used for commander detection visualization.")]
     [SerializeField] private Color _colorCommander;
 
 
     [Header("Local Overrides (only if enabled)")]
     [Tooltip("Local detection radius for threats. Used only when local overrides are enabled."), Range(1, 200)]
     [SerializeField] private float _threatRadius;
+
     [Tooltip("Local detection radius for sheep. Used only when local overrides are enabled."), Range(1, 200)]
     [SerializeField] private float _sheepRadius;
+
     [Tooltip("Local detection radius for player. Used only when local overrides are enabled."), Range(1, 200)]
     [SerializeField] private float _playerRadius;
+
     [Tooltip("Local detection radius for commander. Used only when local overrides are enabled."), Range(1, 200)]
     [SerializeField] private float _commanderRadius;
 
+
     [Tooltip("Local layer mask used to detect threats. Used only when local overrides are enabled.")]
     [SerializeField] private LayerMask _threatLayer;
+
     [Tooltip("Local layer mask used to detect sheep. Used only when local overrides are enabled.")]
     [SerializeField] private LayerMask _sheepLayer;
+
     [Tooltip("Local layer mask used to detect the player. Used only when local overrides are enabled.")]
     [SerializeField] private LayerMask _playerLayer;
 
-    private bool _isPlayerTooClose;  
+    private bool _isPlayerTooClose;
     private bool _isPlayerInTameRange;
 
     /// <summary>
     /// Gets the active threat detection radius, either from local overrides or from SheepSettings.
     /// </summary>
-    private float ThreatRadius => _useLocalOverrides ? _threatRadius : settings.ThreatRadius;
+    private float ThreatRadius => _useLocalOverrides ? _threatRadius : _settings.ThreatRadius;
 
     /// <summary>
     /// Gets the active sheep detection radius, either from local overrides or from SheepSettings.
     /// </summary>
-    private float SheepRadius => _useLocalOverrides ? _sheepRadius : settings.SheepRadius;
+    private float SheepRadius => _useLocalOverrides ? _sheepRadius : _settings.SheepRadius;
 
     /// <summary>
     /// Gets the active player detection radius, either from local overrides or from SheepSettings.
     /// </summary>
-    private float PlayerRadius => _useLocalOverrides ? _playerRadius : settings.PlayerRadius;
+    private float PlayerRadius => _useLocalOverrides ? _playerRadius : _settings.PlayerRadius;
 
     /// <summary>
     /// Gets the active commander detection radius, either from local overrides or from SheepSettings.
     /// </summary>
-    private float CommanderRadius => _useLocalOverrides ? _commanderRadius : settings.CommanderRadius;
+    private float CommanderRadius => _useLocalOverrides ? _commanderRadius : _settings.CommanderRadius;
 
     /// <summary>
     /// Gets the active threat layer mask, either from local overrides or from SheepSettings.
     /// </summary>
-    private LayerMask ThreatLayer => _useLocalOverrides ? _threatLayer : settings.ThreatLayer;
+    private LayerMask ThreatLayer => _useLocalOverrides ? _threatLayer : _settings.ThreatLayer;
 
     /// <summary>
     /// Gets the active sheep layer mask, either from local overrides or from SheepSettings.
     /// </summary>
-    private LayerMask SheepLayer => _useLocalOverrides ? _sheepLayer : settings.SheepLayer;
+    private LayerMask SheepLayer => _useLocalOverrides ? _sheepLayer : _settings.SheepLayer;
 
     /// <summary>
     /// Gets the active player layer mask, either from local overrides or from SheepSettings.
     /// </summary>
-    private LayerMask PlayerLayer => _useLocalOverrides ? _playerLayer : settings.PlayerLayer;
+    private LayerMask PlayerLayer => _useLocalOverrides ? _playerLayer : _settings.PlayerLayer;
 
     /// <summary>
     /// Gets the closest currently detected threat.
@@ -169,21 +186,18 @@ public class SheepSense : MonoBehaviour
     public Collider[] CommanderHits { get; private set; }
 
     /// <summary>
-    /// Detects if player is too close.
+    /// Indicates whether the player is close enough to scare the sheep.
     /// </summary>
     public bool IsPlayerTooClose => _isPlayerTooClose;
 
     /// <summary>
-    /// Detects if player is in range for taming.
+    /// Indicates whether the player is close enough to tame the sheep.
     /// </summary>
     public bool IsPlayerInTameRange => _isPlayerInTameRange;
-
-  
 
     private void Awake()
     {
         SetBaseValues();
-
     }
 
     /// <summary>
@@ -191,19 +205,27 @@ public class SheepSense : MonoBehaviour
     /// </summary>
     private void SetBaseValues()
     {
-        _threatRadius = settings.ThreatRadius;
-        _sheepRadius = settings.SheepRadius;
-        _playerRadius = settings.PlayerRadius;
-        _commanderRadius = settings.CommanderRadius;
-        _threatLayer = settings.ThreatLayer;
-        _sheepLayer = settings.SheepLayer;
-        _playerLayer = settings.PlayerLayer;
-        _colorThreat = settings.ColorThreat;
-        _colorSheep = settings.ColorSheep;
-        _colorPlayer = settings.ColorPlayer;
-        _colorCommander = settings.ColorCommander;
-        _fearDistanceForPlayer = settings.FearRadiusforPlayer;
-        _distanceForTamingSheep = settings.DistanceForTaming;
+        if (_settings == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"{name}: No SheepSettings assigned.");
+#endif
+            return;
+        }
+
+        _threatRadius = _settings.ThreatRadius;
+        _sheepRadius = _settings.SheepRadius;
+        _playerRadius = _settings.PlayerRadius;
+        _commanderRadius = _settings.CommanderRadius;
+        _threatLayer = _settings.ThreatLayer;
+        _sheepLayer = _settings.SheepLayer;
+        _playerLayer = _settings.PlayerLayer;
+        _colorThreat = _settings.ColorThreat;
+        _colorSheep = _settings.ColorSheep;
+        _colorPlayer = _settings.ColorPlayer;
+        _colorCommander = _settings.ColorCommander;
+        _fearDistanceForPlayer = _settings.FearRadiusforPlayer;
+        _distanceForTamingSheep = _settings.DistanceForTaming;
     }
 
     private void Update()
@@ -234,7 +256,6 @@ public class SheepSense : MonoBehaviour
 
         CurrentSheep = TryGetClosest(SheepHits);
         HasSheepInRange = CurrentSheep != null;
-      
     }
 
     /// <summary>
@@ -249,6 +270,7 @@ public class SheepSense : MonoBehaviour
         HasPlayerInRange = CurrentPlayer != null;
 
         _isPlayerTooClose = false;
+        _isPlayerInTameRange = false;
 
         if (CurrentPlayer == null)
             return;
@@ -256,8 +278,6 @@ public class SheepSense : MonoBehaviour
         float distance = Vector3.Distance(transform.position, CurrentPlayer.position);
         _isPlayerTooClose = distance < _fearDistanceForPlayer;
         _isPlayerInTameRange = distance < _distanceForTamingSheep;
-
-
     }
 
     /// <summary>
@@ -296,7 +316,6 @@ public class SheepSense : MonoBehaviour
             }
         }
         return closest;
-
     }
 
     /// <summary>
@@ -328,7 +347,6 @@ public class SheepSense : MonoBehaviour
                 closest = sheep.transform;
             }
         }
-
         return closest;
     }
 
@@ -336,7 +354,7 @@ public class SheepSense : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (settings == null)
+        if (_settings == null)
             return;
 
         var currentThreatPosition = GetTargetPosition(CurrentThreat);
@@ -356,6 +374,9 @@ public class SheepSense : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
+        if (_settings == null)
+            return;
+
         var currentThreatPosition = GetTargetPosition(CurrentThreat);
         var currentSheepPosition = GetTargetPosition(CurrentSheep);
         var currentPlayerPosition = GetTargetPosition(CurrentPlayer);
@@ -364,7 +385,6 @@ public class SheepSense : MonoBehaviour
         if (_showDetectionRangeWiresPermanent)
         {
             ShowDetectionAreaOnGizmos();
-
         }
         if (_showClosestDetectionLinePermanent)
         {

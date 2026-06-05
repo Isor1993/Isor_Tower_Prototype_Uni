@@ -6,9 +6,10 @@
 *
 * Description :
 * Represents the patrol behavior state of a sheep.
-* Moves the sheep between random valid patrol positions around the herd anchor
-* for a limited patrol duration. The state reacts to threats, sleep state,
-* and hunger by transitioning into alert, sleeping, or eating behavior.
+* Moves the sheep to a random valid patrol position around the herd anchor.
+* The state reacts to threats, dodge situations, player proximity, sleep,
+* hunger, and herd movement by transitioning into the corresponding behavior.
+* Once the patrol destination is reached, the sheep returns to idle behavior.
 *
 * History :
 * 20.02.2026 ER Created
@@ -16,37 +17,29 @@
 using UnityEngine;
 
 /// <summary>
-/// State in which the sheep patrols around the herd area and periodically receives new patrol targets.
+/// State in which the sheep moves toward a random patrol position around the herd area.
 /// </summary>
-public class PatrolState : SheepStateBase,IResumeTargetState
+public class PatrolState : SheepStateBase, IResumeTargetState
 {
-    private readonly Timer _patrolTimer = new Timer();
-    private readonly Timer _newTargetTimer = new Timer();
 
-    private float _patrolTime;
-    private float _newTargetTime;
     private bool _hasResumeTarget;
     private Vector3 _resumeTarget;
-    private Vector3 _newPos;
 
-    public PatrolState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+    public PatrolState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
     }
 
     /// <summary>
-    /// Enters the patrol state, randomizes the patrol duration,
-    /// resets the patrol timers, and assigns the first patrol target.
+    /// Enters the patrol state and assigns either a resumed movement target
+    /// or a new random patrol target.
     /// </summary>
     public override void Enter()
     {
+#if UNITY_EDITOR
         Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(PatrolState)}");
+#endif
 
-        _patrolTime = Random.Range(Settings.PatrolTimeMin, Settings.PatrolTimeMax);
-        _newTargetTime = Settings.PatrolNewTargetTime;
-
-        
-
-        if(_hasResumeTarget)
+        if (_hasResumeTarget)
         {
             Sheep.Move.MoveTo(_resumeTarget);
             _hasResumeTarget = false;
@@ -56,73 +49,77 @@ public class PatrolState : SheepStateBase,IResumeTargetState
     }
 
     /// <summary>
-    /// Updates the patrol behavior.
-    /// The sheep switches to alert when a threat is detected, to sleeping when it is asleep,
-    /// to eating when it is hungry, or to idle when the patrol duration is finished.
-    /// It also assigns a new patrol target after the configured target update interval
-    /// once the current destination has been reached.
+    /// Updates the patrol behavior and checks for conditions that should interrupt
+    /// patrol movement, such as threats, dodge situations, player proximity,
+    /// sleep, hunger, or herd movement. Returns to idle once the destination is reached.
     /// </summary>
     public override void Tick()
     {
-        _newTargetTimer.Tick(Time.deltaTime);
-        _patrolTimer.Tick(Time.deltaTime);
-
         if (Sheep.Sense.HasThreat)
         {
-            _patrolTimer.Reset();
-            _newTargetTimer.Reset();
-            FSM.ChangeState(new OnAlertState(Sheep, FSM));
-            return;
-        }    
-        
-        if(Sheep.Dodge.ShouldDodge)
-        {
-            
-            FSM.ChangeState(new DodgeState(Sheep, FSM, this));
+            FSM.ChangeState<OnAlertState>();
             return;
         }
 
-        
-        if (Sheep.Sense.IsPlayerInTameRange&&Sheep.IsTamed)
+        if (Sheep.Dodge.ShouldDodge)
         {
-            _patrolTimer.Reset();
-            _newTargetTimer.Reset();
-            FSM.ChangeState(new FollowPlayerState(Sheep, FSM));
+            DodgeState dodgeState = FSM.GetState<DodgeState>();
+            if (dodgeState == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"{Sheep.name}: Cannot enter DodgeState because it is not registered in the FSM.");
+#endif
+                return;
+            }
+            dodgeState.SetReturnState(FSM.CurrentState);
+            FSM.ChangeState<DodgeState>();
             return;
-        }      
+        }
+
+        if (Sheep.Sense.IsPlayerInTameRange && Sheep.IsTamed)
+        {
+            FSM.ChangeState<FollowPlayerState>();
+            return;
+        }
+
         if (Sheep.IsAsleep)
         {
-            _patrolTimer.Reset();
-            _newTargetTimer.Reset();
-            FSM.ChangeState(new SleepingState(Sheep, FSM));
+            FSM.ChangeState<SleepingState>();
             return;
         }
 
         if (Sheep.Hunger.IsHungry)
         {
-            _patrolTimer.Reset();
-            _newTargetTimer.Reset();
-            FSM.ChangeState(new EatingState(Sheep, FSM));
-            return;
-        }    
-        if(Sheep.IsHerdMoving)
-        {
-            FSM.ChangeState(new RegroupState(Sheep, FSM));
+            FSM.ChangeState<EatingState>();
             return;
         }
-        if(Sheep.Sense.IsPlayerTooClose)
+
+        if (Sheep.IsHerdMoving)
         {
-            FSM.ChangeState(new FleeState(Sheep, FSM,Sheep.Sense.CurrentPlayer));
+            FSM.ChangeState<RegroupState>();
+            return;
+        }
+
+        if (Sheep.Sense.IsPlayerTooClose)
+        {
+            FleeState fleeState = FSM.GetState<FleeState>();
+            if (fleeState == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"{Sheep.name}: Cannot enter FleeState because it is not registered in the FSM.");
+#endif
+                return;
+            }
+            fleeState.SetThreat(Sheep.Sense.CurrentPlayer);
+            FSM.ChangeState<FleeState>();
             return;
         }
 
         if (Sheep.Move.HasReachedDestination())
         {
-            _patrolTimer.Reset();
-            _newTargetTimer.Reset();
-            FSM.ChangeState(new IdleState(Sheep, FSM));
+            FSM.ChangeState<IdleState>();
             return;
-        }        
+        }
     }
 
     /// <summary>
@@ -130,7 +127,7 @@ public class PatrolState : SheepStateBase,IResumeTargetState
     /// </summary>
     public override void Exit()
     {
-       
+
     }
 
 
@@ -140,18 +137,23 @@ public class PatrolState : SheepStateBase,IResumeTargetState
     /// </summary>
     private void SetNewPatrolTarget()
     {
-        _newPos = Sheep.HerdManager.GetRandomPatrolPosition();
+        Vector3 newPos = Sheep.HerdManager.GetRandomPatrolPosition();
 
-        if (!Sheep.Move.TryGetValidTargetPosition(_newPos, out Vector3 validPos))
+        if (!Sheep.Move.TryGetValidTargetPosition(newPos, out Vector3 validPos))
         {
+#if UNITY_EDITOR
             Debug.LogWarning($"{Sheep.name}: Could not find valid patrol target.");
+#endif
             return;
         }
-
-        _newPos = validPos;
-        Sheep.Move.MoveTo(_newPos);
+       
+        Sheep.Move.MoveTo(validPos);
     }
 
+    /// <summary>
+    /// Stores a movement target that should be resumed the next time the patrol state is entered.
+    /// </summary>
+    /// <param name="target">The movement target to resume.</param>
     public void ResumeTarget(Vector3 target)
     {
         _resumeTarget = target;

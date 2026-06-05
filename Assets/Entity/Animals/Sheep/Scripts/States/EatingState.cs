@@ -21,7 +21,7 @@ using UnityEngine;
 /// </summary>
 public class EatingState : SheepStateBase
 {
-    public EatingState(Sheep sheep, SheepFSM fSM) : base(sheep, fSM)
+    public EatingState(Sheep sheep, SheepFSM fsm) : base(sheep, fsm)
     {
     }
 
@@ -30,7 +30,9 @@ public class EatingState : SheepStateBase
     /// </summary>
     public override void Enter()
     {
-        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}:Change state => {nameof(EatingState)}");
+#if UNITY_EDITOR
+        Debug.Log($"{GetType().Name}:{Sheep.gameObject.name}: Change state => {nameof(EatingState)}");
+#endif
         Sheep.Hunger.IsEating = true;
     }
 
@@ -43,12 +45,12 @@ public class EatingState : SheepStateBase
     {
         if (Sheep.Sense.HasThreat)
         {
-            FSM.ChangeState(new OnAlertState(Sheep, FSM));
+            FSM.ChangeState<OnAlertState>();
             return;
         }
         if (Sheep.Hunger.IsFull)
         {
-            FSM.ChangeState(new PatrolState(Sheep, FSM));
+            FSM.ChangeState<PatrolState>();
             return;
         }
     }
